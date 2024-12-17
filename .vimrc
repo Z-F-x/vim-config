@@ -17,15 +17,16 @@
 
 set guicursor=n-v-c-i:block
 
+" highlight LineNr guifg=#5f87af guibg=#1c1c1c ctermfg=cyan ctermbg=black
+" highlight CursorLineNr guifg=#ffaf00 guibg=#1c1c1c ctermfg=yellow ctermbg=black
 
-
-highlight Search ctermfg=white ctermbg=none guifg=#505050 guibg=NONE
+highlight Search ctermfg=white ctermbg=none guifg=NONE guibg=NONE
 
 " Set cursorline background to #505050 (for GUI)
-highlight CursorLine ctermfg=NONE ctermbg=NONE guifg=NONE guibg=#505050
+highlight CursorLine ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
 
 " Set visual highlight background to #505050 (for GUI)
-highlight Visual ctermfg=NONE ctermbg=NONE guifg=NONE guibg=#505050
+highlight Visual ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
 
 " For terminal, you can set a different background color since transparent needs terminal support
 highlight Normal ctermbg=NONE guibg=NONE
@@ -87,6 +88,24 @@ set autoread
 
 " Enable relative line numbers
 set relativenumber
+
+
+highlight CursorLine guibg=NONE ctermbg=NONE guifg=NONE ctermfg=NONE
+highlight CursorLineNr guifg=#ffaf00 guibg=NONE ctermfg=yellow ctermbg=NONE
+highlight LineNr guifg=#5f87af guibg=NONE ctermfg=cyan ctermbg=NONE
+highlight Normal guibg=NONE ctermbg=NONE
+highlight NonText guibg=NONE ctermbg=NONE
+
+ hi CursorLine term=bold cterm=bold guibg=NONE
+
+ highlight oursorLine guibg=NONE ctermbg=NONE
+ " Denne fjerner gråe linjen highlight
+" set nocursorline
+ highlight LineNr guifg=NONE guibg=NONE ctermfg=cyan ctermbg=NONE
+ highlight CursorLineNr guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE
+
+ set cursorline
+
 
 " Set tab width to 4 spaces
 set tabstop=4
