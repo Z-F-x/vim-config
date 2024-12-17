@@ -129,14 +129,26 @@ let s:cdSearchCurrent = {'gui': '#4B5632', 'cterm': s:cterm09, 'cterm256': '58'}
 if g:codedark_modern | let s:cdSearchCurrent = {'gui': '#9e6a03', 'cterm': s:cterm09, 'cterm256': '58'} | endif
 let s:cdSearch = {'gui': '#773800', 'cterm': s:cterm03, 'cterm256': '94'}
 
-" Modify Search highlight color to #505050
-let s:cdSearch = {'gui': '#505050', 'cterm': s:cterm03, 'cterm256': '94'}
+" Modify Search highlight color to #737373
+let s:cdSearch = {'gui': '#737373', 'cterm': s:cterm03, 'cterm256': '94'}
 
-" Modify CursorLine background to #505050
-let s:cdCursorDarkDark = {'gui': '#505050', 'cterm': s:cterm01, 'cterm256': '235'}
+" Modify CursorLine background to NONE
+" let s:cdCursorDarkDark = {'gui': 'NONE', 'cterm': s:cterm01, 'cterm256': '235'}
+ let s:cdCursorDarkDark = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
 
 " Modify Visual highlight color to #505050
-let s:cdSelection = {'gui': '#505050', 'cterm': s:cterm03, 'cterm256': '24'}
+" let s:cdSelection = {'gui': '#272727', 'cterm': s:cterm03, 'cterm256': '24'}
+
+" let s:cdSelection = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+" let s:cdSelection = {'gui': '#272727', 'cterm': '237', 'cterm256': '24'}
+" highlight cdSelection guibg=#272727 guifg=NONE ctermbg=237 ctermfg=NONE
+
+" let s:cdSelection = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+" highlight cdSelection guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE
+
+let s:cdSelection = {'gui': '#454545', 'cterm': '237', 'cterm256': '24'}
+highlight cdSelection guibg=#454545 guifg=NONE ctermbg=237 ctermfg=NONE
+
 
 " Set background to transparent if g:codedark_transparent is set
 if g:codedark_transparent
