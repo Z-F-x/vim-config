@@ -102,7 +102,7 @@ let s:cdLeftLight = {'gui': '#3F3F46', 'cterm': s:cterm03, 'cterm256': '238'}
 
 let s:cdPopupFront = {'gui': '#BBBBBB', 'cterm': s:cterm06, 'cterm256': '250'}
 let s:cdPopupBack = {'gui': '#2D2D30', 'cterm': s:cterm01, 'cterm256': '236'}
-let s:cdPopupHighlightBlue = {'gui': '#505050', 'cterm': s:cterm0D, 'cterm256': '24'}
+let s:cdPopupHighlightBlue = {'gui': '#073655', 'cterm': s:cterm0D, 'cterm256': '24'}
 let s:cdPopupHighlightGray = {'gui': '#3D3D40', 'cterm': s:cterm03, 'cterm256': '237'}
 
 let s:cdSplitLight = {'gui': '#898989', 'cterm': s:cterm04, 'cterm256': '245'}
@@ -128,6 +128,52 @@ let s:cdDiffBlue = {'gui': '#005f87', 'cterm': s:cterm0D, 'cterm256': '24'}
 let s:cdSearchCurrent = {'gui': '#4B5632', 'cterm': s:cterm09, 'cterm256': '58'}
 if g:codedark_modern | let s:cdSearchCurrent = {'gui': '#9e6a03', 'cterm': s:cterm09, 'cterm256': '58'} | endif
 let s:cdSearch = {'gui': '#773800', 'cterm': s:cterm03, 'cterm256': '94'}
+
+" Modify Search highlight color to #737373
+let s:cdSearch = {'gui': '#737373', 'cterm': s:cterm03, 'cterm256': '94'}
+
+" Modify CursorLine background to NONE
+" let s:cdCursorDarkDark = {'gui': 'NONE', 'cterm': s:cterm01, 'cterm256': '235'}
+ let s:cdCursorDarkDark = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+
+" Modify Visual highlight color to #505050
+" let s:cdSelection = {'gui': '#272727', 'cterm': s:cterm03, 'cterm256': '24'}
+
+" let s:cdSelection = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+" let s:cdSelection = {'gui': '#272727', 'cterm': '237', 'cterm256': '24'}
+" highlight cdSelection guibg=#272727 guifg=NONE ctermbg=237 ctermfg=NONE
+
+" let s:cdSelection = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+" highlight cdSelection guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE
+
+let s:cdSelection = {'gui': '#272727', 'cterm': '237', 'cterm256': '24'}
+highlight cdSelection guibg=#272727 guifg=NONE ctermbg=237 ctermfg=NONE
+
+
+" Set background to transparent if g:codedark_transparent is set
+if g:codedark_transparent
+    let s:cdBack = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+endif
+
+
+" Check if g:codedark_transparent is not set and make the background transparent by default
+if !exists("g:codedark_transparent") || g:codedark_transparent == 0
+    let g:codedark_transparent = 1
+    let s:cdBack = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+endif
+
+" If g:codedark_transparent is explicitly set to 1, maintain transparency
+if g:codedark_transparent
+    let s:cdBack = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+else
+    let s:cdBack = {'gui': '#1E1E1E', 'cterm': 'NONE', 'cterm256': '234'}
+endif
+
+" Other colors can be set as you did previously
+
+" Example of setting search highlight to #505050 and transparent background
+highlight Search guifg=#505050 guibg=NONE ctermfg=white ctermbg=none
+highlight CursorLine guifg=NONE guibg=#505050 ctermfg=NONE ctermbg=none
 
 " Syntax colors:
 
