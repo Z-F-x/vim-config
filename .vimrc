@@ -14,13 +14,38 @@
 " Begin plugin installation
 " Set search highlight color to #505050
 
+" Ctrl + F to open search prompt
+nnoremap <C-f> /
+
+" Ctrl + F in insert mode to start search
+inoremap <C-f> <Esc>/
+
+" Use Ctrl + A to select all text
+nnoremap <C-a> ggVG
+
+" Use system clipboard for copy and paste
+vnoremap <C-c> "+y        " Copy selected text to system clipboard
+nnoremap <C-v> "+p        " Paste from system clipboard
+inoremap <C-v> <C-O>"+p   " Paste from system clipboard in insert mode
+
+" Map Ctrl + S to save the file
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <Esc>:w<CR>a
+
+hi Normal guifg=grey guibg=black
+
+if &term == "builtin_gui"
+    set background=dark
+else
+    set background=dark
+endif
 
 set guicursor=n-v-c-i:block
 
 " highlight LineNr guifg=#5f87af guibg=#1c1c1c ctermfg=cyan ctermbg=black
 " highlight CursorLineNr guifg=#ffaf00 guibg=#1c1c1c ctermfg=yellow ctermbg=black
 
-highlight Search ctermfg=white ctermbg=none guifg=NONE guibg=NONE
+highlight Search ctermfg=white ctermbg=none guifg=white guibg=NONE
 
 " Set cursorline background to #505050 (for GUI)
 highlight CursorLine ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
@@ -45,9 +70,6 @@ Plug 'preservim/nerdtree'
 " End plugin installation
 call plug#end()
 
-" Set the colorscheme to Code Dark
-
-
 " Enable line numbers
 set number
 
@@ -56,8 +78,6 @@ set wrap
 
 " Enable syntax highlighting
 syntax enable
-
-
 
 " Enable true color support for modern terminals (optional)
 if has('termguicolors')
@@ -88,24 +108,23 @@ set autoread
 
 " Enable relative line numbers
 set relativenumber
-
-
 highlight CursorLine guibg=NONE ctermbg=NONE guifg=NONE ctermfg=NONE
-highlight CursorLineNr guifg=#ffaf00 guibg=NONE ctermfg=yellow ctermbg=NONE
-highlight LineNr guifg=#5f87af guibg=NONE ctermfg=cyan ctermbg=NONE
+"highlight CursorLineNr guifg=#ffaf00 guibg=NONE ctermfg=yellow ctermbg=NONE
+highlight CursorLineNr guifg=#ffaf00 guibg=#ffaf00 ctermfg=yellow ctermbg=NONE
+highlight LineNr guifg=#5f87af guibg=#5f87af ctermfg=cyan ctermbg=NONE
 highlight Normal guibg=NONE ctermbg=NONE
 highlight NonText guibg=NONE ctermbg=NONE
 
- hi CursorLine term=bold cterm=bold guibg=NONE
+hi CursorLine term=bold cterm=bold guibg=NONE
 
- highlight oursorLine guibg=NONE ctermbg=NONE
- " Denne fjerner gråe linjen highlight
+highlight CoursorLine guibg=NONE ctermbg=NONE
+" Denne fjerner gråe linjen highlight
+
 " set nocursorline
- highlight LineNr guifg=NONE guibg=NONE ctermfg=cyan ctermbg=NONE
- highlight CursorLineNr guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE
+highlight LineNr guifg=NONE guibg=NONE ctermfg=cyan ctermbg=NONE
+highlight CursorLineNr guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE
 
- set cursorline
-
+set cursorline
 
 " Set tab width to 4 spaces
 set tabstop=4
