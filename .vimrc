@@ -32,6 +32,16 @@ inoremap <C-v> <C-O>"+p   " Paste from system clipboard in insert mode
 nnoremap <C-s> :w<CR>
 inoremap <C-s> <Esc>:w<CR>a
 
+" Move selected lines up with Alt+Shift+Up in visual mode
+vmap <A-S-Up> :move '<-2<CR>gv
+" Move selected lines down with Alt+Shift+Down in visual mode
+vmap <A-S-Down> :move '>+1<CR>gv
+
+set mouse=a
+
+" Highlight all instances of the selected word in visual mode
+vnoremap <silent> <leader>h :<C-u>execute 'match Search /\V' . escape(@", '/\')<CR>
+
 hi Normal guifg=grey guibg=black
 
 if &term == "builtin_gui"
