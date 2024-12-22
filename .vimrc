@@ -160,6 +160,15 @@ vnoremap <A-S-Down> <C-o>:execute "normal! " . (line('$') * 3 / 4) . "gg"<CR>
 
 " ***********************************************************************************************************************
 " MoveInSevenSteps funcion: Alternate up and down in 1/7th increments, will cycle repeat
+" ============================
+" TODO: 
+" ============================
+" Idé: Alt + Shift + Arrow Up og Arrow Down cycler i 1/7 increments opp og ned.   
+" Idé hotkey for å flytte musepekeren på current line til midten og dele opp i
+" 7 på samme måte som heri
+" Idé: Hotkey for å flytte mouse cursor i increments of 7 diagonalt across the
+" screen oppe til venstre til nede høyre, oppe høyre til nede venstre og
+" omvendt på begge.
 "
 " Initialize step counter globally
 let g:step = 0
@@ -510,8 +519,9 @@ augroup END
 " set statusline=%=%f\ %l\ —\ Custom\ Text\ — %c\ %m%r%h\ %p%%\ %P%=
 "set statusline=%f\ %l\|%c\ [%y]\ %p%%\ %P\ —\ Custom\ Text\ —
 
+" Set Status Line text color to gray and background color to transparent
+highlight StatusLine ctermfg=8 guifg=#505050 ctermbg=NONE guibg=NONE
 
-
-highlight StatusLine ctermbg=NONE guibg=NONE
+" Set Statusline New Character Background to transparent
 highlight StatusLineNC ctermbg=NONE guibg=NONE
 
