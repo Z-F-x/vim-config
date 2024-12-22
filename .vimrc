@@ -50,12 +50,174 @@ map <C-S-C> "+y
 " Map Ctrl + Shift + V to paste from clipboard
 map <C-S-V> "+p
 
+" Move selected lines up with Ctrl+Alt+Up in visual mode
+vmap <C-A-Up> :move '<-2<CR>gv
 
-" Move selected lines up with Alt+Shift+Up in visual mode
-vmap <A-S-Up> :move '<-2<CR>gv
+" Move selected lines down with Ctrl+Alt+Down in visual mode
+vmap <C-A-Down> :move '>+1<CR>gv
 
-" Move selected lines down with Alt+Shift+Down in visual mode
-vmap <A-S-Down> :move '>+1<CR>gv
+" Move to the end of the current line with Shift + D
+" nnoremap D $
+
+" Move to the last line of the file with Meta + D
+" nnoremap D G
+
+" Move to the first column of the first line with Shift + E
+nnoremap <S-E> gg0
+
+
+" Shift + A: Move cursor to the beginning of the line -  In Visual Mode
+vnoremap <S-A> <C-o>0
+
+" Shift + S: Move cursor to the end of the line - in Visual Mode
+vnoremap <S-S> <C-o>$
+
+" Shift + A: Move cursor to the beginning of line - In Normal Mode
+nnoremap <S-A> 0
+
+" Shift + S: Move cursor to the end of the line - In Normal Mode
+nnoremap <S-S> $
+
+" Move half page up with Shift + D in Normal Mode
+nnoremap <S-D> <C-U>
+
+
+" Move half page up with Shift + D in Visual Mode
+vnoremap <S-D> <C-o><C-U>
+
+" In Normal Mode
+" Alt + Left Arrow: Move the cursor to the beginning of the line
+nnoremap <A-Left> 0
+
+" Alt + Right Arrow: Move the cursor to the end of the line
+nnoremap <A-Right> $
+
+" Alt + Up Arrow: Move the cursor to the beginning of the first line (top of the file)
+nnoremap <A-Up> gg
+
+" Alt + Down Arrow: Move the cursor to the end of the last line (bottom of the file)
+nnoremap <A-Down> G
+
+" In Insert Mode
+" Alt + Left Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move cursor to the beginning of the line
+inoremap <A-Left> <C-o>0
+
+" Alt + Right Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move cursor to the end of the line
+inoremap <A-Right> <C-o>$
+
+" Alt + Up Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move cursor to the beginning of the first line
+inoremap <A-Up> <C-o>gg
+
+" Alt + Down Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move cursor to the end of the last line
+inoremap <A-Down> <C-o>G
+
+" In Visual Mode
+" Alt + Left Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move cursor to the beginning of the line
+vnoremap <A-Left> <C-o>0
+
+" Alt + Right Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move cursor to the end of the line
+vnoremap <A-Right> <C-o>$
+
+" Alt + Up Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move cursor to the beginning of the first line
+vnoremap <A-Up> <C-o>gg
+
+" Alt + Down Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move cursor to the end of the last line
+vnoremap <A-Down> <C-o>G
+
+" In Normal Mode
+" Alt + Shift + Right Arrow: Move the cursor to the middle of the file
+nnoremap <A-S-Right> :execute "normal! " . (line('$') / 2) . "gg"<CR>
+
+" In Insert Mode
+" Alt + Shift + Right Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move to the middle of the file
+inoremap <A-S-Right> <C-o>:execute "normal! " . (line('$') / 2) . "gg"<CR>
+
+" In Visual Mode
+" Alt + Shift + Right Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move to the middle of the file
+vnoremap <A-S-Right> <C-o>:execute "normal! " . (line('$') / 2) . "gg"<CR>
+
+" In Normal Mode
+" Alt + Shift + Up Arrow: Move the cursor to the middle of the first half of the file
+nnoremap <A-S-Up> :execute "normal! " . (line('$') / 4) . "gg"<CR>
+
+" Alt + Shift + Down Arrow: Move the cursor to the middle of the bottom half of the file
+nnoremap <A-S-Down> :execute "normal! " . (line('$') * 3 / 4) . "gg"<CR>
+
+" In Insert Mode
+" Alt + Shift + Up Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move to the middle of the first half of the file
+inoremap <A-S-Up> <C-o>:execute "normal! " . (line('$') / 4) . "gg"<CR>
+
+" Alt + Shift + Down Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move to the middle of the bottom half of the file
+inoremap <A-S-Down> <C-o>:execute "normal! " . (line('$') * 3 / 4) . "gg"<CR>
+
+" In Visual Mode
+" Alt + Shift + Up Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move to the middle of the first half of the file
+vnoremap <A-S-Up> <C-o>:execute "normal! " . (line('$') / 4) . "gg"<CR>
+
+" Alt + Shift + Down Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move to the middle of the bottom half of the file
+vnoremap <A-S-Down> <C-o>:execute "normal! " . (line('$') * 3 / 4) . "gg"<CR>
+
+
+" ***********************************************************************************************************************
+" MoveInSevenSteps funcion: Alternate up and down in 1/7th increments, will cycle repeat
+"
+" Initialize step counter globally
+let g:step = 0
+
+" Function to calculate and move the cursor
+function! MoveInSevenSteps()
+    let total_lines = line('$')
+    let middle = total_lines / 2
+    let step_size = total_lines / 7
+    let target_line = 0
+
+    " Alternate between moving upwards and downwards in 1/7th steps
+    if g:step == 4
+        " Step 5: Move to the top of the file (line 1)
+        let target_line = 1
+    elseif g:step == 5
+        " Step 6: Move to the end of the file (last line)
+        let target_line = total_lines
+    elseif g:step == 6
+        " Step 7: Move directly to the middle (line 581 for 1162 lines)
+        let target_line = middle
+    elseif g:step % 2 == 0
+        " Move upwards
+        let target_line = middle - (step_size * ((g:step / 2) + 1))
+    else
+        " Move downwards
+        let target_line = middle + (step_size * ((g:step / 2) + 1))
+    endif
+
+    " Ensure the target line is within valid range
+    if target_line < 1
+        let target_line = 1
+    elseif target_line > total_lines
+        let target_line = total_lines
+    endif
+
+    " Move to the target line
+    execute "normal! " . target_line . "G"
+
+    " Increment step
+    let g:step += 1
+
+    " Reset step counter after 7 steps (i.e., after completing one full cycle)
+    if g:step >= 7
+        let g:step = 0
+    endif
+endfunction
+
+" Map Alt + Shift + Left Arrow to call MoveInSevenSteps
+nnoremap <A-S-Left> :call MoveInSevenSteps()<CR>
+
+" Insert Mode mappings
+inoremap <A-S-Left> <C-o>:call MoveInSevenSteps()<CR>
+
+" Visual Mode mappings
+vnoremap <A-S-Left> <C-o>:call MoveInSevenSteps()<CR>
+
+" ***********************************************************************************************************************
 
 " Highlight all instances of the selected word in visual mode
 " vnoremap <silent> <leader>h :<C-u>execute 'match Search /\V' . escape(@", '/\')<CR>
@@ -72,6 +234,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'luochen1990/rainbow'
+Plug 'terryma/vim-multiple-cursors'
+
 
 " End plugin installation
 call plug#end()
@@ -219,4 +383,124 @@ let g:rainbow_conf = {
 \   'nerdtree': 0
 \ }
 \ }
+
+set laststatus=2 " Always show the status line
+" set statusline=%=%f\ %l\ —\ Custom\ Text\ — %c\ %m%r%h\ %p%%\ %P%=
+" set statusline=%=%f\ │\ %l\ │\ %c\ %m%r%h\ │\ %p%%\ │\ %P%=
+
+" Status line to the right
+" set statusline=%=%f\ │\ %l\ │\ %c\ %m%r%h\ │\ %p%%\ │\ %P\ │\ %L
+
+" Status line centered
+" set statusline=%=%f\ │\ %l\ │\ %c\ %m%r%h\ │\ %p%%\ │\ %P\ │\ %L%= 
+
+
+" Function to calculate which section of 1/7th of the file you're in
+function! SectionOfSeven()
+  " Get the total number of lines in the file
+  let total_lines = line('$')
+  
+  " Divide the file into 7 sections, and calculate the section for the current line
+  let section_size = total_lines / 7
+  let current_line = line('.')
+
+  " Determine the section (1 to 7) based on the current line number
+  let section = (current_line - 1) / section_size + 1
+
+  " Return the section number as a string
+  return string(section)
+endfunction
+
+" Function to calculate the total number of characters in the file
+function! TotalChars()
+  " Join all lines and get the length (total number of characters)
+  let total_chars = strlen(join(getline(1, '$')))
+  return total_chars
+endfunction
+
+" Function to get the file size in bits, bytes, and MB with the desired format
+function! FileSizeFormatted()
+  " Get the file size in bytes
+  let file_size = getfsize(expand('%'))
+
+  " Calculate the file size in bits, bytes, and MB
+  let file_size_bits = file_size * 8
+  let file_size_bytes = file_size
+  let file_size_mb = file_size / 1048576.0
+
+  " Format the output
+  let bits_str = printf('%05d Bits', file_size_bits)
+  let bytes_str = printf('%05d Bytes', file_size_bytes)
+  let mb_str = printf('%.4fMB', file_size_mb)
+
+  " Return the formatted file size string
+  return bits_str . ' / ' . bytes_str . ' / ' . mb_str
+endfunction
+
+" Function to calculate the size of the unsaved changes (differences)
+function! UnsavedChangesSize()
+  " Get the current buffer content
+  let buffer_lines = getline(1, '$')
+
+  " Get the saved file content (before any changes)
+  let saved_lines = readfile(expand('%'))
+
+  " Find the lines that have changed by comparing current buffer lines with saved file lines
+  let unsaved_changes = []
+
+  " Compare the two sets of lines
+  for i in range(0, min([len(buffer_lines), len(saved_lines)]) - 1)
+    if buffer_lines[i] != saved_lines[i]
+      call add(unsaved_changes, buffer_lines[i])
+    endif
+  endfor
+
+  " Add any lines in the buffer that have been added but not yet saved
+  if len(buffer_lines) > len(saved_lines)
+    call extend(unsaved_changes, buffer_lines[len(saved_lines):])
+  endif
+
+  " Calculate the unsaved changes size (in bytes and bits)
+  let unsaved_text = join(unsaved_changes)
+  let unsaved_size_bytes = strlen(unsaved_text)
+  let unsaved_size_bits = unsaved_size_bytes * 8
+
+  " Format the output
+  let unsaved_bits_str = printf('%05d Bits', unsaved_size_bits)
+  let unsaved_bytes_str = printf('%05d Bytes', unsaved_size_bytes)
+
+  return unsaved_bits_str . ' / ' . unsaved_bytes_str
+endfunction
+
+" Function to calculate the total columns (characters) in the current line
+function! TotalColumns()
+  " Get the total number of characters in the current line
+  return len(getline('.'))
+endfunction
+
+" Function to update the statusline dynamically
+function! UpdateStatusline()
+  " Redraw the statusline to show all the requested information
+  set statusline=%=%c\/%{TotalColumns()}\ │\ %f\ │\ %l/%L\ │\ %{SectionOfSeven()}/7\ │\ Chars:\ %{TotalChars()}\ │\ File\ Size:\ %{FileSizeFormatted()}\ │\ Unsaved\ Changes:\ %{UnsavedChangesSize()}\ %m%r%h\ │\ %p%%%= 
+  " Trigger a redraw of the statusline
+  redrawstatus
+endfunction
+
+" Set up autocommands to update the statusline in real time
+augroup UpdateStatuslineGroup
+  autocmd!
+  " Update statusline whenever the cursor moves or the file changes
+  autocmd CursorMoved,TextChanged,TextChangedI * call UpdateStatusline()
+augroup END
+
+
+
+
+" set statusline=%=%f\ %l\ —\ Custom\ Text\ — %c\ %m%r%h\ %p%%\ %P%=
+"set statusline=%f\ %l\|%c\ [%y]\ %p%%\ %P\ —\ Custom\ Text\ —
+
+
+
+highlight StatusLine ctermbg=NONE guibg=NONE
+highlight StatusLineNC ctermbg=NONE guibg=NONE
 
