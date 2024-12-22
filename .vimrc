@@ -481,7 +481,18 @@ endfunction
 " Function to update the statusline dynamically
 function! UpdateStatusline()
   " Redraw the statusline to show all the requested information
-  set statusline=%=%c\/%{TotalColumns()}\ │\ %f\ │\ %l/%L\ │\ %{SectionOfSeven()}/7\ │\ Chars:\ %{TotalChars()}\ │\ File\ Size:\ %{FileSizeFormatted()}\ │\ Unsaved\ Changes:\ %{UnsavedChangesSize()}\ %m%r%h\ │\ %p%%%= 
+" set statusline=%=%c\/%{TotalColumns()}\ │\ %f\ │\ %l/%L\ │\ %{SectionOfSeven()}/7\ │\ Chars:\ %{TotalChars()}\ │\ 🗎\ %{FileSizeFormatted()}\ │\ 🖪\ %{UnsavedChangesSize()}\ %m%r%h\ │\ %p%%%= 
+
+  set statusline=%\=%c\/%{TotalColumns()}\ •\ %f\ •\ %l/%L\ •\ %{SectionOfSeven()}/7\ •\ Chars:\ %{TotalChars()}\ •\ 🗎\ %{FileSizeFormatted()}\ •\ 🖪\ %{UnsavedChangesSize()}\ %m%r%h\ •\ %p%%\%= 
+
+
+set laststatus=2  " Always display the status line
+set cmdheight=1   " Make the command line area higher, creating a gap
+" set statusline=%•\ %\=%c\/%{TotalColumns()}\ •\ %f\ •\ %l/%L\ •\ %{SectionOfSeven()}/7\ •\ Chars:\ %{TotalChars()}\ •\ 🗎\ %{FileSizeFormatted()}\ •\ 🖪\ %{UnsavedChangesSize()}\ %m%r%h\ •\ %p%%\ 
+
+
+ " set statusline=%=%c/%{TotalColumns()} %f %l/%L %{SectionOfSeven()}/7 Chars: %{TotalChars()} 🗎 %{FileSizeFormatted()} 🖪 %{UnsavedChangesSize()} %m%r%h %p%%=
+
   " Trigger a redraw of the statusline
   redrawstatus
 endfunction
