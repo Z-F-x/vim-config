@@ -40,9 +40,9 @@ inoremap <C-s> <Esc>:w<CR>:echo 'File Saved'<CR>
 
 
 " Use system clipboard for copy and paste
-vnoremap <C-c> "+y        " Copy selected text to system clipboard
-nnoremap <C-v> "+p        " Paste from system clipboard
-inoremap <C-v> <C-O>"+p   " Paste from system clipboard in insert mode
+vnoremap <C-c> "+y   
+nnoremap <C-v> "+p
+inoremap <C-v> <C-O>"+p  
 
 " Map Ctrl + Shift + C to copy to clipboard
 map <C-S-C> "+y
@@ -157,6 +157,59 @@ vnoremap <A-S-Up> <C-o>:execute "normal! " . (line('$') / 4) . "gg"<CR>
 " Alt + Shift + Down Arrow: Temporarily switch to Normal mode (with Ctrl + o), then move to the middle of the bottom half of the file
 vnoremap <A-S-Down> <C-o>:execute "normal! " . (line('$') * 3 / 4) . "gg"<CR>
 
+" Initialize a global variable to track the number of key presses
+let g:cursor_move_cycle = 0
+
+" Function to move the cursor as per the alternating pattern
+function! MoveCursor()
+  " Get the current line
+  let line = getline('.')
+  let line_length = len(line)
+
+  " Calculate the step size (1/7th of the line length)
+  let step = line_length / 7
+  let middle_pos = line_length / 2  " Zero-based middle of the line
+
+  " Get the current cursor position (column)
+  let current_col = col('.') - 1  " Zero-based index of cursor column
+
+  " If the cursor is not in the middle, move it there first
+  if current_col != middle_pos
+    call cursor(line('.'), middle_pos + 1) " Move cursor to the middle (1-based index)
+    let g:cursor_move_cycle = 1  " Start the alternating cycle from here
+    return
+  endif
+
+  " Alternate movement pattern when the cursor is in the middle
+  let cycle_pos = g:cursor_move_cycle % 7
+
+  " Determine the direction based on the step in the cycle
+  if cycle_pos == 0
+    let new_pos = middle_pos - step  " 1/7 to the left from the middle
+  elseif cycle_pos == 1
+    let new_pos = middle_pos + step  " 1/7 to the right from the middle
+  elseif cycle_pos == 2
+    let new_pos = middle_pos - 2 * step  " 2/7 to the left from the middle
+  elseif cycle_pos == 3
+    let new_pos = middle_pos + 2 * step  " 2/7 to the right from the middle
+  elseif cycle_pos == 4
+    let new_pos = 1  " Move to the start of the line
+  elseif cycle_pos == 5
+    let new_pos = line_length  " Move to the end of the line
+  elseif cycle_pos == 6
+    let new_pos = middle_pos  " Reset to the middle
+  endif
+
+  " Set the cursor to the new position (1-based index)
+  call cursor(line('.'), new_pos + 1)  " Adjust for 1-based index
+
+  " Increment the cycle counter
+  let g:cursor_move_cycle += 1
+endfunction
+
+" Key mapping for Ctrl + Alt + Up Arrow to move the cursor
+" Make sure your terminal can recognize this combination
+nnoremap <C-A-Up> :call MoveCursor()<CR>
 
 " ***********************************************************************************************************************
 " MoveInSevenSteps funcion: Alternate up and down in 1/7th increments, will cycle repeat
@@ -225,6 +278,7 @@ inoremap <A-S-Left> <C-o>:call MoveInSevenSteps()<CR>
 
 " Visual Mode mappings
 vnoremap <A-S-Left> <C-o>:call MoveInSevenSteps()<CR>
+
 
 " ***********************************************************************************************************************
 
@@ -525,3 +579,6 @@ highlight StatusLine ctermfg=8 guifg=#505050 ctermbg=NONE guibg=NONE
 " Set Statusline New Character Background to transparent
 highlight StatusLineNC ctermbg=NONE guibg=NONE
 
+" Setter full tittel fra root top left i terminalvinduet
+set title
+set titlestring=%F
