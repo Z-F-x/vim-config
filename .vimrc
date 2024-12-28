@@ -1,3 +1,8 @@
+
+
+
+set showmode
+
 set t_Co=256   " Use 256 colors
 
 set termguicolors
@@ -23,11 +28,199 @@ endif
 
 set clipboard=unnamedplus
 
+" Remap leader to comma
+let mapleader = ","
+
+
+" Toggle // comments
+" Function to toggle comment with // on selected lines or current line
+function! ToggleCommentSlash()
+  " Get the current line or visual selection
+  let l:lines = []
+  
+  " If in visual mode, use the selected lines
+  if mode() ==# 'v' || mode() ==# 'V'
+    normal! gv
+    let l:lines = getpos("'<")[1:2]
+    normal! gv
+  else
+    " Otherwise, just use the current line
+    let l:lines = [line('.'), line('.')]
+  endif
+
+  " Iterate over the lines
+  for l:line_num in range(l:lines[0], l:lines[1])
+    let l:current_line = getline(l:line_num)
+
+    " Check if the line starts with // (commented line)
+    if l:current_line =~ '^\s*//'
+      " Uncomment the line by removing the //
+      let l:current_line = substitute(l:current_line, '^\s*//\s*', '', '')
+      call setline(l:line_num, l:current_line)
+    else
+      " Comment the line by adding //
+      let l:current_line = '// ' . l:current_line
+      call setline(l:line_num, l:current_line)
+    endif
+  endfor
+endfunction
+
+" Map Ctrl + Alt + C to the ToggleCommentSlash function
+nnoremap <C-A-c> :call ToggleCommentSlash()<CR>
+vnoremap <C-A-c> :call ToggleCommentSlash()<CR>
+
+
+function! ToggleVimComment()
+  " Check if the line starts with a double-quote comment
+  if getline('.') =~ '^\s*"'
+    " Uncomment the line by removing the double-quote
+    s/^\(\s*\)"\(.*\)/\1\2/
+  else
+    " Comment the line by adding a double-quote without extra space
+    s/^\(\s*\)\(.*\)/\1"\2/
+  endif
+endfunction
+
+
+" Toggle vim comments using Ctrl + Alt + c
+nnoremap <C-A-v> :call ToggleVimComment()<CR>
+vnoremap <C-A-v> :call ToggleVimComment()<CR>
+inoremap <C-A-v> <Esc>:call ToggleVimComment()<CR>a
+
+
+" Define the ToggleC89Comment function (unchanged)
+function! ToggleC89Comment()
+  " Check for the C89 comment pattern at the beginning of the line
+  if match(getline('.'), '^\s*/\*.*\*/\s*$') != -1
+    " If the line is already commented, remove the comment
+    s/^\s*\/\*//  " Remove starting /*
+    s/\*\/\s*$//  " Remove ending */
+  else
+    " If the line is not commented, add C89 comment markers
+    s/^\s*/\/* /   " Add starting /*
+    s/$/ *\//      " Add ending */
+  endif
+endfunction
+
+" Map Ctrl+C in Visual mode
+xnoremap <C-C> :call ToggleC89Comment()<CR>
+
+" Map Ctrl+C in Normal mode to default behavior (to cancel selection)
+nnoremap <C-C> <C-C>
+
+
+
+
+nnoremap <C-c> :call ToggleC89Comment()<CR>
+vnoremap <C-c> :call ToggleC89Comment()<CR>
+inoremap <C-c> <C-O>:call ToggleC89Comment()<CR>
+
+nnoremap <leader>c :call ToggleC89Comment()<CR>
+vnoremap <leader>c :call ToggleC89Comment()<CR>
+inoremap <leader>c <C-O>:call ToggleC89Comment()<CR>
+
+" Assuming Fn+M is treated as Alt+M
+nnoremap <silent> <M-m> :call ToggleC89Comment()<CR>
+
+" Map Alt + R for reloading .vimrci
+
+nnoremap <A-r> :source ~/.vimrc<CR>
+inoremap <A-r> <Esc>:source ~/.vimrc<CR>a
+
 " Ctrl + F to open search prompt
 nnoremap <C-f> /
-
-" Ctrl + F in insert mode to start search
 inoremap <C-f> <Esc>/
+
+command! Avslutt quit
+
+command! Slutt quit
+command! ClearSearch nohlsearch
+
+
+nnoremap <A-r> :source ~/.vimrc<CR>
+inoremap <A-r> <Esc>:source ~/.vimrc<CR>a
+
+augroup VisualMultiEscape
+  autocmd!
+  " Map ESC to exit Visual-Multi mode and clear search highlight
+  autocmd User VisualMultiExit :nohlsearch
+
+augroup END
+
+" Map ESC to exit Visual-Multi mode
+let g:VM_maps = {}
+let g:VM_maps['Exit'] = '<ESC>'
+
+" Clear search highlight when pressing ESC in any mode
+ nnoremap <Esc> :nohlsearch<CR> 
+ nnoremap <Esc> :nohlsearch<CR><Esc>
+
+inoremap <Esc> <Esc>:nohlsearch<CR>
+vnoremap <Esc> <Esc>:nohlsearch<CR>
+cnoremap <Esc> <C-c>:nohlsearch<CR>
+
+" Map Enter to act as 'n' (next match) during search
+nnoremap <CR> n
+"inoremap <CR> <C-O>n
+
+" Optionally, clear search highlights when exiting insert mode
+
+
+
+" Optionally, clear search highlights when exiting insert mode or visual mode
+"augroup clear_search_highlight
+"  autocmd!
+  " Clear search highlight when leaving insert mode (pressing Esc)
+"  autocmd InsertLeave * :nohlsearch
+  " Clear search highlight when leaving visual mode (pressing Esc)
+" augroup END
+
+
+augroup clear_search_highlight
+  autocmd!
+  " Clear search highlight when leaving insert mode (pressing ESC)
+  autocmd InsertLeave * :nohlsearch
+  " Clear search highlight when leaving visual mode (pressing ESC)
+  autocmd ModeChanged *v* :nohlsearch
+  " Clear search highlight when leaving Visual-Multi (when leaving Visual mode with multiple cursors)
+  autocmd User VisualMultiExit :nohlsearch
+  " Clear search highlight when leaving command-line mode (ESC during search)
+  autocmd CmdlineLeave * :nohlsearch
+augroup END
+nnoremap <Esc> :nohlsearch<CR><Esc>
+
+
+
+
+" Clear search highlight when pressing <Esc> in insert mode
+inoremap <Esc> <Esc>:nohlsearch<CR>
+" Clear search highlight when pressing <Esc> in normal mode
+nnoremap <Esc> <Esc>:nohlsearch<CR>
+
+" Clear search highlight when pressing <Esc> while in search mode (this works in search mode directly)
+cnoremap <Esc> <Esc>:nohlsearch<CR>
+
+
+
+function! AddCursorToSearchMatch()
+  " Move to the next search match
+  normal! n
+
+  " Optionally, yank the word under the cursor (you could also just use the search term directly)
+  normal! yiw
+
+  " Add a cursor for the current search match using vim-multiple-cursors
+  call feedkeys("\<Plug>MultipleCursorsFind")
+
+  return ""
+endfunction
+
+" Remap Ctrl-Enter to act like Ctrl-n in normal mode (for adding cursors)
+nmap <C-CR> <C-n>
+
+" Remap Ctrl-Enter to act like Ctrl-n in visual mode (for adding cursors)
+vmap <C-CR> <C-n>
+
 
 " Use Ctrl + A to select all text
 nnoremap <C-a> ggVG
@@ -43,6 +236,9 @@ inoremap <C-s> <Esc>:w<CR>:echo 'File Saved'<CR>
 vnoremap <C-c> "+y   
 nnoremap <C-v> "+p
 inoremap <C-v> <C-O>"+p  
+
+" Remap Ctrl+z to undo
+nnoremap <C-z> u
 
 " Map Ctrl + Shift + C to copy to clipboard
 map <C-S-C> "+y
@@ -285,7 +481,47 @@ vnoremap <A-S-Left> <C-o>:call MoveInSevenSteps()<CR>
 " Highlight all instances of the selected word in visual mode
 " vnoremap <silent> <leader>h :<C-u>execute 'match Search /\V' . escape(@", '/\')<CR>
 
+" Make Backspace in Normal and Visual mode enter Insert mode, move one character to the right, and then backspace
+"nnoremap <Backspace> i<Right><BS>
 
+
+"vnoremap <Backspace> i<Right><BS>
+
+
+
+
+
+
+
+
+
+
+
+" Hotkey to enter Insert mode, move one arrow key to the right, and press Enter
+"nnoremap <Enter> i<Right><Enter>
+"vnoremap <Enter> i<Right><Enter>
+
+
+
+" Map Enter key to handle the new logic
+nnoremap <CR> :call EnterInsertMode()<CR>
+
+vnoremap <CR> :call EnterInsertMode()<CR>
+
+function! EnterInsertMode()
+  " Check if we are at the beginning of the line (column 1)
+  if col('.') == 1
+    " At the beginning of the line, insert a new line above, move to the beginning of that line, and then move down one line
+    execute "normal! O\<Esc>j0"
+  " Check if we are at the end of the line (col('$') gives the position after the last character)
+  elseif col('.') >= col('$') - 1
+    " At or beyond the end of the line, insert a new line below and move cursor to the beginning of this new line
+    execute "normal! o\<Esc>0"
+  else
+    " If neither at the beginning nor end of the line, insert a newline (Enter) and move cursor to the beginning of this new line
+    execute "normal! i\<CR>\<Esc>0"
+  endif
+endfunction
 
 set nocompatible
 call plug#begin('~/.vim/plugged')
@@ -384,7 +620,17 @@ hi Normal guifg=grey guibg=black
 
 colorscheme zfx
 " Remove mode message highlight
-highlight ModeMsg ctermbg=NONE guibg=NONE
+"highlight ModeMsg ctermbg=NONE guibg=NONE guifg=#505050
+"
+"highlight MsgArea ctermbg=NONE guibg=NONE guifg=#505050
+
+"highlight Cmdline ctermbg=NONE guibg=NONE guifg=#505050
+"highlight CmdlineText ctermbg=NONE guibg=NONE guifg=#505050
+"highlight ModeMsg ctermbg=NONE guibg=NONE guifg=#505050
+"highlight ErrorMsg ctermbg=NONE guibg=NONE guifg=#505050
+"highlight IncSearch ctermbg=NONE guibg=NONE guifg=#505050
+"highlight MsgArea ctermbg=NONE guibg=NONE guifg=#505050
+highlight ModeMsg ctermbg=NONE guibg=NONE guifg=#505050
 " Highlight opening parentheses
 highlight ParenthesisOpen guifg=Blue
 
@@ -582,3 +828,6 @@ highlight StatusLineNC ctermbg=NONE guibg=NONE
 " Setter full tittel fra root top left i terminalvinduet
 set title
 set titlestring=%F
+
+
+
