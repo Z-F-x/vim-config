@@ -624,7 +624,7 @@ colorscheme zfx
 "
 "highlight MsgArea ctermbg=NONE guibg=NONE guifg=#505050
 
-"highlight Cmdline ctermbg=NONE guibg=NONE guifg=#505050
+highlight Cmdline ctermbg=NONE guibg=NONE guifg=#505050
 "highlight CmdlineText ctermbg=NONE guibg=NONE guifg=#505050
 "highlight ModeMsg ctermbg=NONE guibg=NONE guifg=#505050
 "highlight ErrorMsg ctermbg=NONE guibg=NONE guifg=#505050
