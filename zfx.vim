@@ -15,6 +15,7 @@ let s:base0C = '#569CD6' " Preprocessor Directives
 let s:base0D = '#223E55' " Keywords
 let s:base0E = '#C586C0' " Keywords
 
+
 scriptencoding utf-8
 
 hi clear
@@ -95,9 +96,16 @@ if !exists("g:codedark_modern")
     let g:codedark_modern=0
 endif
 
+
 let s:cdNone = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
 let s:cdFront = {'gui': '#D4D4D4', 'cterm': s:cterm05, 'cterm256': '188'}
+"let s:cdFront2 = { 'gui': '#505050', 'cterm': '7', 'cterm256': '244' }
+
+let s:cdFront2 = { 'gui': '#1C1C1C', 'cterm': '0', 'cterm256': '234' }
+let s:cdFront3 = { 'gui': '#505050', 'cterm': '0', 'cterm256': '236' }
+let s:cdFront4 =  { 'gui': 'NONE', 'cterm': '0', 'cterm256': 'NONE' } 
 let s:cdBack = {'gui': '#1E1E1E', 'cterm': s:cterm00, 'cterm256': '234'}
+
 if g:codedark_modern | let s:cdBack = {'gui': '#1f1f1f', 'cterm': 'NONE', 'cterm256': '234'} | endif
 if g:codedark_transparent | let s:cdBack = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'} | endif
 
@@ -109,7 +117,7 @@ let s:cdTabOutside = {'gui': '#252526', 'cterm': s:cterm01, 'cterm256': '235'}
 if g:codedark_modern | let s:cdTabOutside = {'gui': '#181818', 'cterm': s:cterm01, 'cterm256': '236'} | endif
 
 let s:cdLeftDark = {'gui': '#252526', 'cterm': s:cterm01, 'cterm256': '235'}
-let s:cdLeftMid = {'gui': '#373737', 'cterm': s:cterm03, 'cterm256': '237'}
+let s:cdLeftMid = { 'gui': 'NONE', 'cterm': 'NONE', 'cterm256': '237', 'guifg': '#333333' }
 if g:codedark_modern | let s:cdLeftMid = {'gui': '#181818', 'cterm': 'NONE', 'cterm256': '237'} | endif
 let s:cdLeftLight = {'gui': '#3F3F46', 'cterm': s:cterm03, 'cterm256': '238'}
 
@@ -167,7 +175,13 @@ highlight cdSelection guibg=#454545 guifg=NONE ctermbg=237 ctermfg=NONE
 if g:codedark_transparent
     let s:cdBack = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
 endif
+" :highlight ModeMsg ctermbg=NONE guibg=NONE
+" :highlight ModeMsg ctermbg=NONE guibg=NONE guifg=#505050
+highlight ModeMsg ctermbg=NONE guibg=NONE guifg=#505050
+"highlight MsgArea ctermbg=NONE guibg=NONE guifg=#505050
 
+
+highlight MsgArea ctermbg=NONE guibg=NONE guifg=#505050
 
 " Check if g:codedark_transparent is not set and make the background transparent by default
 if !exists("g:codedark_transparent") || g:codedark_transparent == 0
@@ -189,7 +203,6 @@ highlight Search guifg=#505050 guibg=NONE ctermfg=white ctermbg=none
 highlight CursorLine guifg=NONE guibg=#505050 ctermfg=NONE ctermbg=none gui=bold cterm=bold
 
 " Syntax colors:
-
 if !exists("g:codedark_conservative")
     let g:codedark_conservative=0
 endif
@@ -242,7 +255,7 @@ call <sid>hi('IncSearch', s:cdNone, s:cdSearchCurrent, 'none', {})
 call <sid>hi('LineNr', s:cdLineNumber, s:cdBack, 'none', {})
 call <sid>hi('CursorLineNr', s:cdPopupFront, s:cdBack, 'none', {})
 call <sid>hi('MatchParen', s:cdNone, s:cdCursorDark, 'none', {})
-call <sid>hi('ModeMsg', s:cdFront, s:cdLeftDark, 'none', {})
+call <sid>hi('ModeMsg', s:cdFront3, s:cdFront4, 'none', {})
 hi! link MoreMsg ModeMsg
 call <sid>hi('NonText', s:cdLineNumber, s:cdNone, 'none', {})
 call <sid>hi('Pmenu', s:cdPopupFront, s:cdPopupBack, 'none', {})
@@ -252,13 +265,13 @@ call <sid>hi('PmenuThumb', {}, s:cdPopupFront, 'none', {})
 call <sid>hi('Question', s:cdBlue, s:cdBack, 'none', {})
 call <sid>hi('Search', s:cdNone, s:cdSearch, 'none', {})
 call <sid>hi('SpecialKey', s:cdLineNumber, s:cdNone, 'none', {})
-call <sid>hi('StatusLine', s:cdFront, s:cdLeftMid, 'none', {})
+call <sid>hi('StatusLine', s:cdFront2, s:cdLeftMid, 'none', {})
 call <sid>hi('StatusLineNC', s:cdFront, s:cdLeftDark, 'none', {})
 call <sid>hi('TabLine', s:cdFront, s:cdTabOther, 'none', {})
 call <sid>hi('TabLineFill', s:cdFront, s:cdTabOutside, 'none', {})
 call <sid>hi('TabLineSel', s:cdFront, s:cdTabCurrent, 'none', {})
 call <sid>hi('Title', s:cdNone, s:cdNone, 'bold', {})
-call <sid>hi('Visual', s:cdNone, s:cdSelection, 'none', {})
+call <sid>hi('Visual', s:cdNone, s:cdFront3, 'none', {})
 hi! link VisualNOS Visual
 call <sid>hi('WarningMsg', s:cdOrange, s:cdBack, 'none', {})
 call <sid>hi('WildMenu', s:cdNone, s:cdSelection, 'none', {})
