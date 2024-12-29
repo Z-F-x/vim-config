@@ -1,14 +1,28 @@
-" Vim Code Dark (color scheme)
-" https://github.com/tomasiser/vim-code-dark
+" Base colors
+let s:base00 = '#1E1E1E' " Background
+let s:base01 = '#262626' 
+let s:base02 = '#303030'
+let s:base03 = '#3C3C3C' 
+let s:base04 = '#808080' 
+let s:base05 = '#D4D4D4' " Default text
+let s:base06 = '#5c6370' " Comments
+let s:base07 = '#FFFFFF' " Brightened text
+let s:base08 = '#F44747' " Variables 
+let s:base09 = '#B5CEA8' " Constants
+let s:base0A = '#D7BA7D' " Functions
+let s:base0B = '#6A9955' " Strings
+let s:base0C = '#569CD6' " Preprocessor Directives
+let s:base0D = '#223E55' " Keywords
+let s:base0E = '#C586C0' " Keywords
+
 
 scriptencoding utf-8
 
-set background=dark
 hi clear
 if exists("syntax_on")
     syntax reset
 endif
-let g:colors_name="codedark"
+let g:colors_name="zfx"
 
 " Highlighting function (inspiration from https://github.com/chriskempson/base16-vim)
 if &t_Co >= 256
@@ -82,9 +96,16 @@ if !exists("g:codedark_modern")
     let g:codedark_modern=0
 endif
 
+
 let s:cdNone = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
 let s:cdFront = {'gui': '#D4D4D4', 'cterm': s:cterm05, 'cterm256': '188'}
+"let s:cdFront2 = { 'gui': '#505050', 'cterm': '7', 'cterm256': '244' }
+
+let s:cdFront2 = { 'gui': '#1C1C1C', 'cterm': '0', 'cterm256': '234' }
+let s:cdFront3 = { 'gui': '#505050', 'cterm': '0', 'cterm256': '236' }
+let s:cdFront4 =  { 'gui': 'NONE', 'cterm': '0', 'cterm256': 'NONE' } 
 let s:cdBack = {'gui': '#1E1E1E', 'cterm': s:cterm00, 'cterm256': '234'}
+
 if g:codedark_modern | let s:cdBack = {'gui': '#1f1f1f', 'cterm': 'NONE', 'cterm256': '234'} | endif
 if g:codedark_transparent | let s:cdBack = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'} | endif
 
@@ -96,7 +117,7 @@ let s:cdTabOutside = {'gui': '#252526', 'cterm': s:cterm01, 'cterm256': '235'}
 if g:codedark_modern | let s:cdTabOutside = {'gui': '#181818', 'cterm': s:cterm01, 'cterm256': '236'} | endif
 
 let s:cdLeftDark = {'gui': '#252526', 'cterm': s:cterm01, 'cterm256': '235'}
-let s:cdLeftMid = {'gui': '#373737', 'cterm': s:cterm03, 'cterm256': '237'}
+let s:cdLeftMid = { 'gui': 'NONE', 'cterm': 'NONE', 'cterm256': '237', 'guifg': '#333333' }
 if g:codedark_modern | let s:cdLeftMid = {'gui': '#181818', 'cterm': 'NONE', 'cterm256': '237'} | endif
 let s:cdLeftLight = {'gui': '#3F3F46', 'cterm': s:cterm03, 'cterm256': '238'}
 
@@ -112,7 +133,7 @@ let s:cdSplitThumb = {'gui': '#424242', 'cterm': s:cterm04, 'cterm256': '238'}
 let s:cdCursorDarkDark = {'gui': '#222222', 'cterm': s:cterm01, 'cterm256': '235'}
 let s:cdCursorDark = {'gui': '#51504F', 'cterm': s:cterm03, 'cterm256': '239'}
 let s:cdCursorLight = {'gui': '#AEAFAD', 'cterm': s:cterm04, 'cterm256': '145'}
-let s:cdSelection = {'gui': '#373737', 'cterm': s:cterm03, 'cterm256': '24'}
+let s:cdSelection = {'gui': '#264F78', 'cterm': s:cterm03, 'cterm256': '24'}
 let s:cdLineNumber = {'gui': '#5A5A5A', 'cterm': s:cterm04, 'cterm256': '240'}
 
 let s:cdDiffRedDark = {'gui': '#4B1818', 'cterm': s:cterm08, 'cterm256': '52'}
@@ -129,15 +150,66 @@ let s:cdSearchCurrent = {'gui': '#4B5632', 'cterm': s:cterm09, 'cterm256': '58'}
 if g:codedark_modern | let s:cdSearchCurrent = {'gui': '#9e6a03', 'cterm': s:cterm09, 'cterm256': '58'} | endif
 let s:cdSearch = {'gui': '#773800', 'cterm': s:cterm03, 'cterm256': '94'}
 
-" Syntax colors:
+" Modify Search highlight color to #737373
+let s:cdSearch = {'gui': '#737373', 'cterm': s:cterm03, 'cterm256': '94'}
 
+" Modify CursorLine background to NONE
+" let s:cdCursorDarkDark = {'gui': 'NONE', 'cterm': s:cterm01, 'cterm256': '235'}
+ let s:cdCursorDarkDark = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+
+" Modify Visual highlight color to #505050
+" let s:cdSelection = {'gui': '#272727', 'cterm': s:cterm03, 'cterm256': '24'}
+
+" let s:cdSelection = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+" let s:cdSelection = {'gui': '#272727', 'cterm': '237', 'cterm256': '24'}
+" highlight cdSelection guibg=#272727 guifg=NONE ctermbg=237 ctermfg=NONE
+
+" let s:cdSelection = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+" highlight cdSelection guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE
+
+let s:cdSelection = {'gui': '#454545', 'cterm': '237', 'cterm256': '24'}
+highlight cdSelection guibg=#454545 guifg=NONE ctermbg=237 ctermfg=NONE
+
+
+" Set background to transparent if g:codedark_transparent is set
+if g:codedark_transparent
+    let s:cdBack = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+endif
+" :highlight ModeMsg ctermbg=NONE guibg=NONE
+" :highlight ModeMsg ctermbg=NONE guibg=NONE guifg=#505050
+highlight ModeMsg ctermbg=NONE guibg=NONE guifg=#505050
+"highlight MsgArea ctermbg=NONE guibg=NONE guifg=#505050
+
+
+highlight MsgArea ctermbg=NONE guibg=NONE guifg=#505050
+
+" Check if g:codedark_transparent is not set and make the background transparent by default
+if !exists("g:codedark_transparent") || g:codedark_transparent == 0
+    let g:codedark_transparent = 1
+    let s:cdBack = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+endif
+
+" If g:codedark_transparent is explicitly set to 1, maintain transparency
+if g:codedark_transparent
+    let s:cdBack = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+else
+    let s:cdBack = {'gui': '#1E1E1E', 'cterm': 'NONE', 'cterm256': '234'}
+endif
+
+" Other colors can be set as you did previously
+
+" Example of setting search highlight to #505050 and transparent background
+highlight Search guifg=#505050 guibg=NONE ctermfg=white ctermbg=none
+highlight CursorLine guifg=NONE guibg=#505050 ctermfg=NONE ctermbg=none gui=bold cterm=bold
+
+" Syntax colors:
 if !exists("g:codedark_conservative")
     let g:codedark_conservative=0
 endif
 
 " Italicized comments
 if !exists("g:codedark_italics")
-    let g:codedark_italics=0
+    let g:codedark_italics=1
 endif
 
 let s:cdGray = {'gui': '#808080', 'cterm': s:cterm04, 'cterm256': '08'}
@@ -166,7 +238,7 @@ let s:cdSilver = {'gui': '#C0C0C0', 'cterm': s:cterm05, 'cterm256': '7'}
 call <sid>hi('Normal', s:cdFront, s:cdBack, 'none', {})
 call <sid>hi('ColorColumn', {}, s:cdCursorDarkDark, 'none', {})
 call <sid>hi('Cursor', s:cdCursorDark, s:cdCursorLight, 'none', {})
-call <sid>hi('CursorLine', {}, s:cdCursorDarkDark, 'none', {})
+call <sid>hi('CursorLine', {}, s:cdCursorDarkDark, 'bold', {})
 hi! link CursorColumn CursorLine
 call <sid>hi('Directory', s:cdBlue, s:cdNone, 'none', {})
 call <sid>hi('DiffAdd', s:cdFront, s:cdDiffGreenLight, 'none', {})
@@ -183,7 +255,7 @@ call <sid>hi('IncSearch', s:cdNone, s:cdSearchCurrent, 'none', {})
 call <sid>hi('LineNr', s:cdLineNumber, s:cdBack, 'none', {})
 call <sid>hi('CursorLineNr', s:cdPopupFront, s:cdBack, 'none', {})
 call <sid>hi('MatchParen', s:cdNone, s:cdCursorDark, 'none', {})
-call <sid>hi('ModeMsg', s:cdFront, s:cdLeftDark, 'none', {})
+call <sid>hi('ModeMsg', s:cdFront3, s:cdFront4, 'none', {})
 hi! link MoreMsg ModeMsg
 call <sid>hi('NonText', s:cdLineNumber, s:cdNone, 'none', {})
 call <sid>hi('Pmenu', s:cdPopupFront, s:cdPopupBack, 'none', {})
@@ -193,13 +265,13 @@ call <sid>hi('PmenuThumb', {}, s:cdPopupFront, 'none', {})
 call <sid>hi('Question', s:cdBlue, s:cdBack, 'none', {})
 call <sid>hi('Search', s:cdNone, s:cdSearch, 'none', {})
 call <sid>hi('SpecialKey', s:cdLineNumber, s:cdNone, 'none', {})
-call <sid>hi('StatusLine', s:cdFront, s:cdLeftMid, 'none', {})
+call <sid>hi('StatusLine', s:cdFront2, s:cdLeftMid, 'none', {})
 call <sid>hi('StatusLineNC', s:cdFront, s:cdLeftDark, 'none', {})
 call <sid>hi('TabLine', s:cdFront, s:cdTabOther, 'none', {})
 call <sid>hi('TabLineFill', s:cdFront, s:cdTabOutside, 'none', {})
 call <sid>hi('TabLineSel', s:cdFront, s:cdTabCurrent, 'none', {})
 call <sid>hi('Title', s:cdNone, s:cdNone, 'bold', {})
-call <sid>hi('Visual', s:cdNone, s:cdSelection, 'none', {})
+call <sid>hi('Visual', s:cdNone, s:cdFront3, 'none', {})
 hi! link VisualNOS Visual
 call <sid>hi('WarningMsg', s:cdOrange, s:cdBack, 'none', {})
 call <sid>hi('WildMenu', s:cdNone, s:cdSelection, 'none', {})
@@ -655,3 +727,6 @@ call <sid>hi('LspCxxHlSymNamespace', s:cdSilver, {}, 'none', {})
 call <sid>hi('CocHighlightText', {}, s:cdSelection, 'none', {})
 call <sid>hi('CocExplorerIndentLine', s:cdCursorDark, {}, 'none', {})
 call <sid>hi('CocInlayHint', s:cdLineNumber, {}, 'none', {})
+
+
+
