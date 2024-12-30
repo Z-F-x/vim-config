@@ -31,6 +31,30 @@ set clipboard=unnamedplus
 " Remap leader to comma
 let mapleader = ","
 
+" Indent with | in Visual and Normal mode
+"vnoremap | >gv
+"vnoremap <S-|> <gv
+"nnoremap | >>_
+"nnoremap <S-|> <<_
+"
+
+" Indent with Tab in Visual and Normal mode
+"vnoremap <Tab> >gv
+"vnoremap <S-Tab> <gv
+"nnoremap <Tab> >>_
+"nnoremap <S-Tab> <<_
+
+" Indent with a single space in Visual and Normal modes
+vnoremap <Tab> :s/^/ /<CR>gv
+vnoremap <S-Tab> :s/^ //g<CR>gv
+"nnoremap <Tab> :execute "normal! I "<CR>
+"nnoremap <S-Tab> :execute "normal! ^x"<CR>
+" Indent with a single space in Visual and Normal modes, moving cursor to the start of each line first
+"vnoremap <Tab> :normal! 0:s/^/ /<CR>gv
+"vnoremap <S-Tab> :normal! 0:s/^ //g<CR>gv
+"nnoremap <Tab> :execute "normal! 0I "<CR>
+"nnoremap <S-Tab> :execute "normal! 0^x"<CR>
+
 
 " Toggle // comments
 " Function to toggle comment with // on selected lines or current line
@@ -108,6 +132,31 @@ xnoremap <C-C> :call ToggleC89Comment()<CR>
 " Map Ctrl+C in Normal mode to default behavior (to cancel selection)
 nnoremap <C-C> <C-C>
 
+
+" Map Shift + Arrow Right = Enter Visual Mode
+nnoremap <S-Right> v
+
+" Map Shift + Arrow Left = Enter Visual Mode
+nnoremap <S-Left> v
+
+" Map Shift + Arrow Down = Visual Line Mode, select current line and move cursor to next line
+nnoremap <S-Down> Vj
+
+" Map Shift + Arrow Up = Visual Line Mode, select current line and move cursor to previous line
+nnoremap <S-Up> Vk
+
+" For Visual Mode:
+" Map Shift + Arrow Down = Extend selection to next line
+vnoremap <S-Down> j
+
+" Map Shift + Arrow Up = Extend selection to previous line
+vnoremap <S-Up> k
+
+" Map Shift + Arrow Right = Extend selection one character to the right
+vnoremap <S-Right> l
+
+" Map Shift + Arrow Left = Extend selection one character to the left
+vnoremap <S-Left> h
 
 
 
