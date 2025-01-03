@@ -1,3 +1,4 @@
+
 " Base colors
 let s:base00 = '#1E1E1E' " Background
 let s:base01 = '#262626' 
@@ -101,7 +102,7 @@ let s:cdNone = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
 let s:cdFront = {'gui': '#D4D4D4', 'cterm': s:cterm05, 'cterm256': '188'}
 "let s:cdFront2 = { 'gui': '#505050', 'cterm': '7', 'cterm256': '244' }
 
-let s:cdFront2 = { 'gui': '#1C1C1C', 'cterm': '0', 'cterm256': '234' }
+let s:cdFront2 = { 'gui': '#505050', 'cterm': '0', 'cterm256': '234' }
 let s:cdFront3 = { 'gui': '#505050', 'cterm': '0', 'cterm256': '236' }
 let s:cdFront4 =  { 'gui': 'NONE', 'cterm': '0', 'cterm256': 'NONE' } 
 let s:cdBack = {'gui': '#1E1E1E', 'cterm': s:cterm00, 'cterm256': '234'}
@@ -215,6 +216,8 @@ endif
 let s:cdGray = {'gui': '#808080', 'cterm': s:cterm04, 'cterm256': '08'}
 let s:cdViolet = {'gui': '#646695', 'cterm': s:cterm04, 'cterm256': '60'}
 let s:cdBlue = {'gui': '#569CD6', 'cterm': s:cterm0D, 'cterm256': '75'}
+let s:cdTypeDeclarations = {'gui': '#4EC8AF', 'cterm': s:cterm03, 'cterm256': '75'}
+let s:cdVariableNames = {'gui': '#9CDCFE', 'cterm': s:cterm03, 'cterm256': '75'} 
 let s:cdDarkBlue = {'gui': '#223E55', 'cterm': s:cterm0D, 'cterm256': '73'}
 let s:cdLightBlue = {'gui': '#9CDCFE', 'cterm': s:cterm0C, 'cterm256': '117'}
 if g:codedark_conservative | let s:cdLightBlue = s:cdFront | endif
@@ -235,7 +238,7 @@ let s:cdSilver = {'gui': '#C0C0C0', 'cterm': s:cterm05, 'cterm256': '7'}
 
 " UI (built-in)
 "    <sid>hi(GROUP, FOREGROUND, BACKGROUND, ATTRIBUTE, SPECIAL)
-call <sid>hi('Normal', s:cdFront, s:cdBack, 'none', {})
+call <sid>hi('Normal', s:cdVariableNames, s:cdBack, 'none', {})
 call <sid>hi('ColorColumn', {}, s:cdCursorDarkDark, 'none', {})
 call <sid>hi('Cursor', s:cdCursorDark, s:cdCursorLight, 'none', {})
 call <sid>hi('CursorLine', {}, s:cdCursorDarkDark, 'bold', {})
@@ -305,7 +308,7 @@ call <sid>hi('Include', s:cdPink, {}, 'none', {})
 call <sid>hi('Define', s:cdPink, {}, 'none', {})
 call <sid>hi('Macro', s:cdPink, {}, 'none', {})
 call <sid>hi('PreCondit', s:cdPink, {}, 'none', {})
-call <sid>hi('Type', s:cdBlue, {}, 'none', {})
+call <sid>hi('Type', s:cdTypeDeclarations, {}, 'none', {})
 call <sid>hi('StorageClass', s:cdBlue, {}, 'none', {})
 call <sid>hi('Structure', s:cdBlue, {}, 'none', {})
 call <sid>hi('Typedef', s:cdBlue, {}, 'none', {})
@@ -730,3 +733,38 @@ call <sid>hi('CocInlayHint', s:cdLineNumber, {}, 'none', {})
 
 
 
+    
+    " Apply C++ style syntax highlighting to C files
+    autocmd FileType c call <sid>hi('StructDecl', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('UnionDecl', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('ClassDecl', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('TypeRef', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('TypedefDecl', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('TypeAliasDecl', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('EnumDecl', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('TemplateTypeParameter', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('TypeAliasTemplateDecl', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('ClassTemplate', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('ClassTemplatePartialSpecialization', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('FunctionTemplate', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('TemplateRef', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('TemplateTemplateParameter', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('UsingDeclaration', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('MemberRef', s:cdLightBlue, {}, 'italic', {})
+    autocmd FileType c call <sid>hi('MemberRefExpr', s:cdYellow, {}, 'italic', {})
+    autocmd FileType c call <sid>hi('Namespace', s:cdSilver, {}, 'none', {})
+    autocmd FileType c call <sid>hi('NamespaceRef', s:cdSilver, {}, 'none', {})
+    autocmd FileType c call <sid>hi('NamespaceAlias', s:cdSilver, {}, 'none', {})
+
+    " C++ LSP syntax highlighting for C files
+    autocmd FileType c call <sid>hi('LspCxxHlSymClass', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('LspCxxHlSymStruct', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('LspCxxHlSymEnum', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('LspCxxHlSymTypeAlias', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('LspCxxHlSymTypeParameter', s:cdBlueGreen, {}, 'none', {})
+    autocmd FileType c call <sid>hi('LspCxxHlSymConcept', s:cdBlueGreen, {}, 'italic', {})
+    autocmd FileType c call <sid>hi('LspCxxHlSymNamespace', s:cdSilver, {}, 'none', {})
+
+
+
+        
