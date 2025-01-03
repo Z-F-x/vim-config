@@ -1,5 +1,71 @@
+" Gives blank lines a full set of virtual spaces
+set virtualedit=all
+set mouse=a
+" Temporarily disable fugitive commands
+let g:loaded_fugitive = 1
 
+" Variable to track whether we're using visual block mode
+let g:is_block_mode = 0
+let g:start_line = 0
+let g:start_col = 0
 
+" Function to handle visual block selection with the mouse
+function! VisualBlockMouse(start_line, start_col)
+    " Get the current position of the mouse
+    let cur_pos = getmousepos()
+    let cur_line = cur_pos.line
+    let cur_col = cur_pos.column
+
+    " Calculate the block region
+    let top_line = a:start_line < cur_line ? a:start_line : cur_line
+    let bottom_line = a:start_line > cur_line ? a:start_line : cur_line
+    let left_col = a:start_col < cur_col ? a:start_col : cur_col
+    let right_col = a:start_col > cur_col ? a:start_col : cur_col
+
+    " Clear any previous visual mode
+    execute "normal! \<Esc>"
+
+    " Move to the start of the block
+    execute 'normal! ' . top_line . 'G'
+    execute 'normal! ' . left_col . '|'
+
+    " Enter visual block mode if required
+    if g:is_block_mode
+        execute 'normal! \<C-V>'
+    end
+
+    " Select the block area
+    execute 'normal! ' . bottom_line . 'G'
+    execute 'normal! ' . right_col . '|'
+endfunction
+
+" Start visual block selection
+function! VisualBlockStart()
+    " Save the starting mouse position for visual block selection
+    let cur_pos = getmousepos()
+    let g:start_line = cur_pos.line
+    let g:start_col = cur_pos.column
+    let g:is_block_mode = 1
+
+    " Enter visual block mode when starting the selection
+    execute 'normal! \<C-V>'
+endfunction
+
+" Finalize the visual block selection
+function! VisualBlockEnd()
+    " Finalize the block selection
+    let g:is_block_mode = 0
+    call VisualBlockMouse(g:start_line, g:start_col)
+endfunction
+
+" Set up mappings for mouse clicks and scrolling behavior
+" Shift+LeftMouse starts visual block mode
+vnoremap <silent> <S-LeftMouse> :call VisualBlockStart()<CR>
+vnoremap <silent> <S-LeftDrag> :call VisualBlockMouse(g:start_line, g:start_col)<CR>
+vnoremap <silent> <S-LeftRelease> :call VisualBlockEnd()<CR>
+
+" Ensure shift-modified behavior when dragging
+autocmd VimEnter, BufEnter * let g:is_block_mode = 0
 
 set showmode
 
@@ -9,16 +75,6 @@ set termguicolors
 if has('termguicolors')
   set t_Co=256  " Tell Vim that 256 colors are supported
 endif
-
-
-set t_Co=256   " Use 256 colors
-
-set termguicolors
-if has('termguicolors')
-  set t_Co=256  " Tell Vim that 256 colors are supported
-endif
-
-
 
 " Correct RGB escape codes for vim inside tmux
 if !has('nvim') && $TERM ==# 'screen-256color'
@@ -31,30 +87,39 @@ set clipboard=unnamedplus
 " Remap leader to comma
 let mapleader = ","
 
-" Indent with | in Visual and Normal mode
-"vnoremap | >gv
-"vnoremap <S-|> <gv
-"nnoremap | >>_
-"nnoremap <S-|> <<_
-"
-
-" Indent with Tab in Visual and Normal mode
-"vnoremap <Tab> >gv
-"vnoremap <S-Tab> <gv
-"nnoremap <Tab> >>_
-"nnoremap <S-Tab> <<_
-
 " Indent with a single space in Visual and Normal modes
 vnoremap <Tab> :s/^/ /<CR>gv
 vnoremap <S-Tab> :s/^ //g<CR>gv
-"nnoremap <Tab> :execute "normal! I "<CR>
-"nnoremap <S-Tab> :execute "normal! ^x"<CR>
-" Indent with a single space in Visual and Normal modes, moving cursor to the start of each line first
-"vnoremap <Tab> :normal! 0:s/^/ /<CR>gv
-"vnoremap <S-Tab> :normal! 0:s/^ //g<CR>gv
-"nnoremap <Tab> :execute "normal! 0I "<CR>
-"nnoremap <S-Tab> :execute "normal! 0^x"<CR>
 
+" Function to toggle comment with /* */ for each line while preserving indentation
+function! ToggleCommentCStyle()
+  " Get the current selection
+  let l:start = line("'<")
+  let l:end = line("'>")
+
+  " Check if the selection is already commented
+  let l:already_commented = 0
+  for l:lnum in range(l:start, l:end)
+    if getline(l:lnum) =~ '^\s*/\*.*\*/\s*$'
+      let l:already_commented = 1
+      break
+    endif
+  endfor
+
+  " If already commented, uncomment the lines
+  if l:already_commented
+    " Remove the comment markers while preserving indentation
+    execute l:start . ',' . l:end . 's#^\(\s*\)/\* ##'
+    execute l:start . ',' . l:end . 's#\s*\*/\s*$##'
+  else
+    " Add /* and */ for each line while preserving indentation
+    execute l:start . ',' . l:end . 's#^\(\s*\)#\1/* #'
+    execute l:start . ',' . l:end . 's#$# */#'
+  endif
+endfunction
+
+" Map the function to Alt + C in visual mode
+xnoremap <silent> <A-c> :<C-u>call ToggleCommentCStyle()<CR>
 
 " Toggle // comments
 " Function to toggle comment with // on selected lines or current line
@@ -105,12 +170,10 @@ function! ToggleVimComment()
   endif
 endfunction
 
-
 " Toggle vim comments using Ctrl + Alt + c
 nnoremap <C-A-v> :call ToggleVimComment()<CR>
 vnoremap <C-A-v> :call ToggleVimComment()<CR>
 inoremap <C-A-v> <Esc>:call ToggleVimComment()<CR>a
-
 
 " Define the ToggleC89Comment function (unchanged)
 function! ToggleC89Comment()
@@ -131,7 +194,6 @@ xnoremap <C-C> :call ToggleC89Comment()<CR>
 
 " Map Ctrl+C in Normal mode to default behavior (to cancel selection)
 nnoremap <C-C> <C-C>
-
 
 " Map Shift + Arrow Right = Enter Visual Mode
 nnoremap <S-Right> v
@@ -158,8 +220,6 @@ vnoremap <S-Right> l
 " Map Shift + Arrow Left = Extend selection one character to the left
 vnoremap <S-Left> h
 
-
-
 nnoremap <C-c> :call ToggleC89Comment()<CR>
 vnoremap <C-c> :call ToggleC89Comment()<CR>
 inoremap <C-c> <C-O>:call ToggleC89Comment()<CR>
@@ -173,8 +233,11 @@ nnoremap <silent> <M-m> :call ToggleC89Comment()<CR>
 
 " Map Alt + R for reloading .vimrci
 
-nnoremap <A-r> :source ~/.vimrc<CR>
-inoremap <A-r> <Esc>:source ~/.vimrc<CR>a
+" Normal mode mapping to source the vimrc and show a message
+nnoremap <A-r> :source ~/.vimrc<CR>:echo "Vim configuration reloaded!"<CR>
+
+" Insert mode mapping to source the vimrc and show a message
+inoremap <A-r> <Esc>:source ~/.vimrc<CR>:echo "Vim configuration reloaded!"<CR>a
 
 " Ctrl + F to open search prompt
 nnoremap <C-f> /
@@ -184,7 +247,6 @@ command! Avslutt quit
 
 command! Slutt quit
 command! ClearSearch nohlsearch
-
 
 nnoremap <A-r> :source ~/.vimrc<CR>
 inoremap <A-r> <Esc>:source ~/.vimrc<CR>a
@@ -214,17 +276,6 @@ nnoremap <CR> n
 
 " Optionally, clear search highlights when exiting insert mode
 
-
-
-" Optionally, clear search highlights when exiting insert mode or visual mode
-"augroup clear_search_highlight
-"  autocmd!
-  " Clear search highlight when leaving insert mode (pressing Esc)
-"  autocmd InsertLeave * :nohlsearch
-  " Clear search highlight when leaving visual mode (pressing Esc)
-" augroup END
-
-
 augroup clear_search_highlight
   autocmd!
   " Clear search highlight when leaving insert mode (pressing ESC)
@@ -238,9 +289,6 @@ augroup clear_search_highlight
 augroup END
 nnoremap <Esc> :nohlsearch<CR><Esc>
 
-
-
-
 " Clear search highlight when pressing <Esc> in insert mode
 inoremap <Esc> <Esc>:nohlsearch<CR>
 " Clear search highlight when pressing <Esc> in normal mode
@@ -248,8 +296,6 @@ nnoremap <Esc> <Esc>:nohlsearch<CR>
 
 " Clear search highlight when pressing <Esc> while in search mode (this works in search mode directly)
 cnoremap <Esc> <Esc>:nohlsearch<CR>
-
-
 
 function! AddCursorToSearchMatch()
   " Move to the next search match
@@ -270,7 +316,6 @@ nmap <C-CR> <C-n>
 " Remap Ctrl-Enter to act like Ctrl-n in visual mode (for adding cursors)
 vmap <C-CR> <C-n>
 
-
 " Use Ctrl + A to select all text
 nnoremap <C-a> ggVG
 
@@ -279,7 +324,6 @@ nnoremap <C-s> :w<CR>
 
 " Map Ctrl + S to save the file in Insert mode with a confirmation message
 inoremap <C-s> <Esc>:w<CR>:echo 'File Saved'<CR>
-
 
 " Use system clipboard for copy and paste
 vnoremap <C-c> "+y   
@@ -301,15 +345,8 @@ vmap <C-A-Up> :move '<-2<CR>gv
 " Move selected lines down with Ctrl+Alt+Down in visual mode
 vmap <C-A-Down> :move '>+1<CR>gv
 
-" Move to the end of the current line with Shift + D
-" nnoremap D $
-
-" Move to the last line of the file with Meta + D
-" nnoremap D G
-
 " Move to the first column of the first line with Shift + E
 nnoremap <S-E> gg0
-
 
 " Shift + A: Move cursor to the beginning of the line -  In Visual Mode
 vnoremap <S-A> <C-o>0
@@ -325,7 +362,6 @@ nnoremap <S-S> $
 
 " Move half page up with Shift + D in Normal Mode
 nnoremap <S-D> <C-U>
-
 
 " Move half page up with Shift + D in Visual Mode
 vnoremap <S-D> <C-o><C-U>
@@ -527,31 +563,6 @@ vnoremap <A-S-Left> <C-o>:call MoveInSevenSteps()<CR>
 
 " ***********************************************************************************************************************
 
-" Highlight all instances of the selected word in visual mode
-" vnoremap <silent> <leader>h :<C-u>execute 'match Search /\V' . escape(@", '/\')<CR>
-
-" Make Backspace in Normal and Visual mode enter Insert mode, move one character to the right, and then backspace
-"nnoremap <Backspace> i<Right><BS>
-
-
-"vnoremap <Backspace> i<Right><BS>
-
-
-
-
-
-
-
-
-
-
-
-" Hotkey to enter Insert mode, move one arrow key to the right, and press Enter
-"nnoremap <Enter> i<Right><Enter>
-"vnoremap <Enter> i<Right><Enter>
-
-
-
 " Map Enter key to handle the new logic
 nnoremap <CR> :call EnterInsertMode()<CR>
 
@@ -583,7 +594,9 @@ Plug 'preservim/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'luochen1990/rainbow'
 Plug 'terryma/vim-multiple-cursors'
-
+Plug 'prabirshrestha/vim-lsp' " vim-lsp
+Plug 'jackguo380/vim-lsp-cxx-highlight'
+Plug 'sheerun/vim-polyglot'
 
 " End plugin installation
 call plug#end()
@@ -698,8 +711,6 @@ let g:rainbow_active = 1
 highlight Visual cterm=bold
 
 
-
-
 let g:rainbow_conf = {
 \ 'guifgs': ['#FFD500', '#DA6FD5', '#169FFF'],  
 \ 'ctermfgs': ['yellow', 'magenta', 'cyan'],   
@@ -742,6 +753,7 @@ let g:rainbow_conf = {
 \ }
 \ }
 
+
 set laststatus=2 " Always show the status line
 " set statusline=%=%f\ %l\ —\ Custom\ Text\ — %c\ %m%r%h\ %p%%\ %P%=
 " set statusline=%=%f\ │\ %l\ │\ %c\ %m%r%h\ │\ %p%%\ │\ %P%=
@@ -752,6 +764,23 @@ set laststatus=2 " Always show the status line
 " Status line centered
 " set statusline=%=%f\ │\ %l\ │\ %c\ %m%r%h\ │\ %p%%\ │\ %P\ │\ %L%= 
 
+
+" set statusline=%=%f\ %l\ —\ Custom\ Text\ — %c\ %m%r%h\ %p%%\ %P%=
+"set statusline=%f\ %l\|%c\ [%y]\ %p%%\ %P\ —\ Custom\ Text\ —
+
+" Set Status Line text color to gray and background color to transparent
+highlight StatusLine ctermfg=8 guifg=#505050 ctermbg=NONE guibg=NONE
+
+" Set Statusline New Character Background to transparent
+highlight StatusLineNC ctermbg=NONE guibg=NONE
+
+" Setter full tittel fra root top left i terminalvinduet
+set title
+set titlestring=%F
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                 S T A T U S L I N E   B E G I N                    "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Function to calculate which section of 1/7th of the file you're in
 function! SectionOfSeven()
@@ -855,28 +884,165 @@ set cmdheight=1   " Make the command line area higher, creating a gap
   redrawstatus
 endfunction
 
-" Set up autocommands to update the statusline in real time
+" Function to calculate the size of the selection in Visual mode
+function! VisualSelectionSize()
+  " Check if Visual mode is active
+  if mode() !~# 'v'
+    return 'No Selection'
+  endif
+
+  " Get the start and end of the visual selection
+  let [start_line, start_col] = getpos("'<")[1:2]
+  let [end_line, end_col] = getpos("'>")[1:2]
+
+  " Initialize the character count
+  let char_count = 0
+
+  " Calculate characters in selected lines
+  for line in range(start_line, end_line)
+    let line_text = getline(line)
+    if line == start_line && line == end_line
+      " Single line selection
+      let char_count += end_col - start_col + 1
+    elseif line == start_line
+      " First line
+      let char_count += strlen(line_text) - start_col + 1
+    elseif line == end_line
+      " Last line
+      let char_count += end_col
+    else
+      " Middle lines
+      let char_count += strlen(line_text)
+    endif
+  endfor
+
+  " Calculate the bit count
+  let bit_count = char_count * 8
+
+  " Format and return the result
+  return printf('%d Chars / %d Bits', char_count, bit_count)
+endfunction
+
+" Update statusline function to include Visual selection size
+function! UpdateStatusline()
+  set statusline=%\=%c\/%{TotalColumns()}\ •\ %f\ •\ %l/%L\ •\ %{SectionOfSeven()}/7\ •\ Chars:\ %{TotalChars()}\ •\ 🗎\ %{FileSizeFormatted()}\ •\ 🖪\ %{UnsavedChangesSize()}\ •\ %{VisualSelectionSize()}\ %m%r%h\ •\ %p%%\%= 
+  redrawstatus
+endfunction
+
+" Set up autocommands for Vim
 augroup UpdateStatuslineGroup
   autocmd!
-  " Update statusline whenever the cursor moves or the file changes
-  autocmd CursorMoved,TextChanged,TextChangedI * call UpdateStatusline()
+  " Update on cursor movement and text changes
+  autocmd CursorMoved,TextChanged,TextChangedI,VimEnter,WinEnter * call UpdateStatusline()
+  " Update visual selection dynamically
+  autocmd CursorMoved * if mode() =~# 'v' | call UpdateStatusline() | endif
 augroup END
 
 
 
 
-" set statusline=%=%f\ %l\ —\ Custom\ Text\ — %c\ %m%r%h\ %p%%\ %P%=
-"set statusline=%f\ %l\|%c\ [%y]\ %p%%\ %P\ —\ Custom\ Text\ —
 
-" Set Status Line text color to gray and background color to transparent
-highlight StatusLine ctermfg=8 guifg=#505050 ctermbg=NONE guibg=NONE
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""                 
+"                   S T A T U S L I N E   E  N D                     "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  let g:lsp_cxx_hl_ft_whitelist = ['c']    
 
-" Set Statusline New Character Background to transparent
-highlight StatusLineNC ctermbg=NONE guibg=NONE
 
-" Setter full tittel fra root top left i terminalvinduet
-set title
-set titlestring=%F
+highlight! link Operator Delimiter
+
+" Set color for strings inside double quotes to #CD9177
+syntax match StringContent /"\zs.\{-}\ze"/ contained
+highlight StringContent guifg=#CD9177 ctermfg=180       
+  " Set color for normal text/variable names
+
+
+" Set color for punctuation marks
+highlight Delimiter guifg=#FFFFFF ctermfg=15
+
+" Optionally link specific syntax groups to the defined highlights
+syntax match Punctuation "[.:;=-><+-]"
+hi link Punctuation Delimiter     
+
+syntax match Operator "[\+\-\|\!\?]"
+hi link Operator Delimiter  " Link operator to the delimiter highlight group
+
+
+" Match C escape sequences like \n, \t, etc. ONLY inside strings or character literals
+syntax match CEscape '\\[abfnrtv\\\"\'\"?]' containedin=String,Character
+                 " Match C escape sequences like \n, \t, etc. ONLY inside strings or character literals
+" Match printf function and its arguments containing escape sequences and format specifiers
+syntax match printfCall /printf\s*(\zs[^)]*\ze)/
+syntax match CEscape "\\[abfnrtv\\\"\"?]" containedin=printfCall
+
+syntax match CEscape "%\(\d*\)[cdxfs]%" containedin=printfCall       
+" Match format specifiers like %d, %3d, %s, etc. inside strings or printf statements
+syntax match CEscape "%\(\d*\)[cdxfs]%" containedin=String,Character
+" Set color for the single quote (') character (VSCode dark string color)
+highlight SingleQuote guifg=#CD9177 ctermfg=180
+highlight DoubleQuote guifg=#CD9177 ctermfg=180    
+" Match single quote character
+
+
+
+" Define an autocommand group for syntax highlighting and color schemes
+augroup custom_syntax_highlighting
+    autocmd!
+    
+    " Set color for strings inside double quotes to #CD9177
+    autocmd VimEnter * syntax match StringContent /"\zs.\{-}\ze"/ contained
+    autocmd VimEnter * highlight StringContent guifg=#CD9177 ctermfg=180
+    
+    " Set color for punctuation marks (including operators like =, -, <, >, ?, !, |)
+    autocmd VimEnter * highlight Delimiter guifg=#FFFFFF ctermfg=15
+    autocmd VimEnter * syntax match Punctuation "[.:;=+-><?!|]"
+    autocmd VimEnter * hi link Punctuation Delimiter
+
+    " Match C escape sequences like \n, \t, etc.
+    autocmd VimEnter * syntax match CEscape '\\[abfnrtv\\\'\"?]'    
+    autocmd VimEnter * highlight CEscape guifg=#D6B97C ctermfg=180
+
+    " Match printf function and its arguments containing escape sequences and format specifiers
+    autocmd VimEnter * syntax match printfCall /printf\s*(\zs[^)]*\ze)/
+    autocmd VimEnter * syntax match CEscape "\\[abfnrtv\\\"\"?]" containedin=printfCall
+    autocmd VimEnter * syntax match CEscape "%\(\d*\)[cdxfs]%" containedin=printfCall
+
+    " Match format specifiers like %d, %3d, %s, etc. inside strings or printf statements
+    autocmd VimEnter * syntax match CEscape "%\(\d*\)[cdxfs]%" containedin=String,Character
+
+
+    " Set color for the single quote (') character (VSCode dark string color)
+    autocmd VimEnter * highlight SingleQuote guifg=#CE9178 ctermfg=180
+    autocmd VimEnter * syntax match SingleQuote "'"
+     " Set color for single-line comments (//) to #699955
+    autocmd VimEnter * syntax match Number /\v([0-9]+(\.[0-9]+)?|\.[0-9]+)/ containedin=!Comment
+
+    autocmd VimEnter * highlight Comment guifg=#699955 ctermfg=59
+
+
+    autocmd VimEnter * syntax match Comment "//.*$" containedin=ALL
+
+    " Set color for block comments (/* */) to #699955
+    autocmd VimEnter * syntax match Comment /\/\*.\{-}\*\// containedin=ALL 
+
+     " Set color for single-line comments (//) to #699955
+    autocmd VimEnter * highlight Comment guifg=#699955 ctermfg=59
+    autocmd VimEnter * syntax match Comment "//.*$" containedin=ALL
+
+
+
+    " Set color for single quote character ('') to #CD9177, outside comments
+    autocmd VimEnter * syntax match SingleQuote "'" containedin=ALL
+    autocmd VimEnter * highlight SingleQuote guifg=#CD9177 ctermfg=180
+    
+    " Set color for content inside single quotes to #D6B97C, outside comments
+    autocmd VimEnter * syntax match SingleQuoteContent /'\zs[^']*\ze'/ containedin=ALL
+    autocmd VimEnter * highlight SingleQuoteContent guifg=#D6B97C ctermfg=180
+    
+    " Match and color single quote content inside comments with the comment color (#699955)
+    autocmd VimEnter * syntax match SingleQuoteContent /'\zs[^']*\ze'/ containedin=Comment
+    autocmd VimEnter * highlight link SingleQuoteContent Comment
+augroup END
+
 
 
 
