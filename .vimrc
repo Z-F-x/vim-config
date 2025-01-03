@@ -9,6 +9,7 @@ let g:is_block_mode = 0
 let g:start_line = 0
 let g:start_col = 0
 
+
 " Function to handle visual block selection with the mouse
 function! VisualBlockMouse(start_line, start_col)
     " Get the current position of the mouse
@@ -984,65 +985,64 @@ highlight DoubleQuote guifg=#CD9177 ctermfg=180
 
 
 
+
+
+
 " Define an autocommand group for syntax highlighting and color schemes
 augroup custom_syntax_highlighting
     autocmd!
     
+    " Apply the settings only to C files
+    autocmd FileType c  " Restrict to C filetype
+
     " Set color for strings inside double quotes to #CD9177
-    autocmd VimEnter * syntax match StringContent /"\zs.\{-}\ze"/ contained
-    autocmd VimEnter * highlight StringContent guifg=#CD9177 ctermfg=180
+    autocmd FileType c syntax match StringContent /"\zs.\{-}\ze"/ contained
+    autocmd FileType c highlight StringContent guifg=#CD9177 ctermfg=180
     
     " Set color for punctuation marks (including operators like =, -, <, >, ?, !, |)
-    autocmd VimEnter * highlight Delimiter guifg=#FFFFFF ctermfg=15
-    autocmd VimEnter * syntax match Punctuation "[.:;=+-><?!|]"
-    autocmd VimEnter * hi link Punctuation Delimiter
+    autocmd FileType c highlight Delimiter guifg=#FFFFFF ctermfg=15
+    autocmd FileType c syntax match Punctuation "[.:;=+-><?!|]"
+    autocmd FileType c hi link Punctuation Delimiter
 
     " Match C escape sequences like \n, \t, etc.
-    autocmd VimEnter * syntax match CEscape '\\[abfnrtv\\\'\"?]'    
-    autocmd VimEnter * highlight CEscape guifg=#D6B97C ctermfg=180
+    autocmd FileType c syntax match CEscape '\\[abfnrtv\\\'\"?]'    
+    autocmd FileType c highlight CEscape guifg=#D6B97C ctermfg=180
 
     " Match printf function and its arguments containing escape sequences and format specifiers
-    autocmd VimEnter * syntax match printfCall /printf\s*(\zs[^)]*\ze)/
-    autocmd VimEnter * syntax match CEscape "\\[abfnrtv\\\"\"?]" containedin=printfCall
-    autocmd VimEnter * syntax match CEscape "%\(\d*\)[cdxfs]%" containedin=printfCall
+    autocmd FileType c syntax match printfCall /printf\s*(\zs[^)]*\ze)/
+    autocmd FileType c syntax match CEscape "\\[abfnrtv\\\"\"?]" containedin=printfCall
+    autocmd FileType c syntax match CEscape "%\(\d*\)[cdxfs]%" containedin=printfCall
 
     " Match format specifiers like %d, %3d, %s, etc. inside strings or printf statements
-    autocmd VimEnter * syntax match CEscape "%\(\d*\)[cdxfs]%" containedin=String,Character
+    autocmd FileType c syntax match CEscape "%\(\d*\)[cdxfs]%" containedin=String,Character
 
+    " Set highlight for numbers to #B4CDA8
+    autocmd VimEnter * highlight Number guifg=#B4CDA8 ctermfg=155
 
+    " Match numbers inside comments and set them to the comment color (#699955)
+    autocmd FileType c syntax match Number /\v([0-9]+(\.[0-9]+)?|\.[0-9]+)/ containedin=i!Comment
+    
     " Set color for the single quote (') character (VSCode dark string color)
-    autocmd VimEnter * highlight SingleQuote guifg=#CE9178 ctermfg=180
-    autocmd VimEnter * syntax match SingleQuote "'"
-     " Set color for single-line comments (//) to #699955
-    autocmd VimEnter * syntax match Number /\v([0-9]+(\.[0-9]+)?|\.[0-9]+)/ containedin=!Comment
+    autocmd FileType c highlight SingleQuote guifg=#CE9178 ctermfg=180
+    autocmd FileType c syntax match SingleQuote "'"
 
-    autocmd VimEnter * highlight Comment guifg=#699955 ctermfg=59
-
-
-    autocmd VimEnter * syntax match Comment "//.*$" containedin=ALL
+    " Set color for single-line comments (//) to #699955
+    autocmd FileType c highlight Comment guifg=#699955 ctermfg=59
+    autocmd FileType c syntax match Comment "//.*$" containedin=ALL
 
     " Set color for block comments (/* */) to #699955
-    autocmd VimEnter * syntax match Comment /\/\*.\{-}\*\// containedin=ALL 
-
-     " Set color for single-line comments (//) to #699955
-    autocmd VimEnter * highlight Comment guifg=#699955 ctermfg=59
-    autocmd VimEnter * syntax match Comment "//.*$" containedin=ALL
-
-
+    autocmd FileType c syntax match Comment /\/\*.\{-}\*\// containedin=ALL 
 
     " Set color for single quote character ('') to #CD9177, outside comments
-    autocmd VimEnter * syntax match SingleQuote "'" containedin=ALL
-    autocmd VimEnter * highlight SingleQuote guifg=#CD9177 ctermfg=180
+    autocmd FileType c syntax match SingleQuote "'" containedin=ALL
+    autocmd FileType c highlight SingleQuote guifg=#CD9177 ctermfg=180
     
     " Set color for content inside single quotes to #D6B97C, outside comments
-    autocmd VimEnter * syntax match SingleQuoteContent /'\zs[^']*\ze'/ containedin=ALL
-    autocmd VimEnter * highlight SingleQuoteContent guifg=#D6B97C ctermfg=180
+    autocmd FileType c syntax match SingleQuoteContent /'\zs[^']*\ze'/ containedin=ALL
+    autocmd FileType c highlight SingleQuoteContent guifg=#D6B97C ctermfg=180
     
     " Match and color single quote content inside comments with the comment color (#699955)
-    autocmd VimEnter * syntax match SingleQuoteContent /'\zs[^']*\ze'/ containedin=Comment
-    autocmd VimEnter * highlight link SingleQuoteContent Comment
+    autocmd FileType c syntax match SingleQuoteContent /'\zs[^']*\ze'/ containedin=Comment
+    autocmd FileType c highlight link SingleQuoteContent Comment
 augroup END
-
-
-
 
