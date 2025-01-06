@@ -822,7 +822,8 @@ function! FileSizeFormatted()
   let mb_str = printf('%.4fMB', file_size_mb)
 
   " Return the formatted file size string
-  return bits_str . ' / ' . bytes_str . ' / ' . mb_str
+  "return bits_str . ' / ' . bytes_str . ' / ' . mb_str
+  return mb_str  
 endfunction
 
 " Function to calculate the size of the unsaved changes (differences)
@@ -854,10 +855,10 @@ function! UnsavedChangesSize()
   let unsaved_size_bits = unsaved_size_bytes * 8
 
   " Format the output
-  let unsaved_bits_str = printf('%05d Bits', unsaved_size_bits)
-  let unsaved_bytes_str = printf('%05d Bytes', unsaved_size_bytes)
+  let unsaved_bits_str = printf('%05d', unsaved_size_bits)
+  let unsaved_bytes_str = printf('%05d bB', unsaved_size_bytes)
 
-  return unsaved_bits_str . ' / ' . unsaved_bytes_str
+  return unsaved_bits_str . '/' . unsaved_bytes_str
 endfunction
 
 " Function to calculate the total columns (characters) in the current line
@@ -871,11 +872,13 @@ function! UpdateStatusline()
   " Redraw the statusline to show all the requested information
 " set statusline=%=%c\/%{TotalColumns()}\ │\ %f\ │\ %l/%L\ │\ %{SectionOfSeven()}/7\ │\ Chars:\ %{TotalChars()}\ │\ 🗎\ %{FileSizeFormatted()}\ │\ 🖪\ %{UnsavedChangesSize()}\ %m%r%h\ │\ %p%%%= 
 
-  set statusline=%\=%c\/%{TotalColumns()}\ •\ %f\ •\ %l/%L\ •\ %{SectionOfSeven()}/7\ •\ Chars:\ %{TotalChars()}\ •\ 🗎\ %{FileSizeFormatted()}\ •\ 🖪\ %{UnsavedChangesSize()}\ %m%r%h\ •\ %p%%\%= 
+ 
+" Start visual block selection
+"function! set statusline=%\=%c\/%{TotalColumns()}\ •\ %f\ •\ %l/%L\ •\ %{SectionOfSeven()}/7\ •\ Chars:\ %{TotalChars()}\ •\ 🗎\ \ %{FileSizeFormatted()}\ •\ 🖪\ \ %{UnsavedChangesSize()}\ %m%r%h •\ %p%%\%= 
 
 
-set laststatus=2  " Always display the status line
-set cmdheight=1   " Make the command line area higher, creating a gap
+"set laststatus=2  " Always display the status line
+"set cmdheight=1   " Make the command line area higher, creating a gap
 " set statusline=%•\ %\=%c\/%{TotalColumns()}\ •\ %f\ •\ %l/%L\ •\ %{SectionOfSeven()}/7\ •\ Chars:\ %{TotalChars()}\ •\ 🗎\ %{FileSizeFormatted()}\ •\ 🖪\ %{UnsavedChangesSize()}\ %m%r%h\ •\ %p%%\ 
 
 
@@ -886,58 +889,61 @@ set cmdheight=1   " Make the command line area higher, creating a gap
 endfunction
 
 " Function to calculate the size of the selection in Visual mode
-function! VisualSelectionSize()
-  " Check if Visual mode is active
-  if mode() !~# 'v'
-    return 'No Selection'
-  endif
+"function! VisualSelectionSize()
+   "Check if Visual mode is active
+  "if mode() !~# 'v'
+    "return 'No Selection'
+  "endif
 
   " Get the start and end of the visual selection
-  let [start_line, start_col] = getpos("'<")[1:2]
-  let [end_line, end_col] = getpos("'>")[1:2]
+  "let [start_line, start_col] = getpos("'<")[1:2]
+  "let [end_line, end_col] = getpos("'>")[1:2]
 
   " Initialize the character count
-  let char_count = 0
+  "let char_count = 0
 
   " Calculate characters in selected lines
-  for line in range(start_line, end_line)
-    let line_text = getline(line)
-    if line == start_line && line == end_line
+  "for line in range(start_line, end_line)
+    "let line_text = getline(line)
+    "if line == start_line && line == end_line
       " Single line selection
-      let char_count += end_col - start_col + 1
-    elseif line == start_line
+      "let char_count += end_col - start_col + 1
+    "elseif line == start_line
       " First line
-      let char_count += strlen(line_text) - start_col + 1
-    elseif line == end_line
+      "let char_count += strlen(line_text) - start_col + 1
+    "elseif line == end_line
       " Last line
-      let char_count += end_col
-    else
+      "let char_count += end_col
+    "else
       " Middle lines
-      let char_count += strlen(line_text)
-    endif
-  endfor
+      "let char_count += strlen(line_text)
+    "endif
+  "endfor
 
   " Calculate the bit count
-  let bit_count = char_count * 8
+  "let bit_count = char_count * 8
 
   " Format and return the result
-  return printf('%d Chars / %d Bits', char_count, bit_count)
-endfunction
+  "return printf('%d Chars;%d Bits', char_count, bit_count)
+"endfunction
 
 " Update statusline function to include Visual selection size
 function! UpdateStatusline()
-  set statusline=%\=%c\/%{TotalColumns()}\ •\ %f\ •\ %l/%L\ •\ %{SectionOfSeven()}/7\ •\ Chars:\ %{TotalChars()}\ •\ 🗎\ %{FileSizeFormatted()}\ •\ 🖪\ %{UnsavedChangesSize()}\ •\ %{VisualSelectionSize()}\ %m%r%h\ •\ %p%%\%= 
+  "set statusline=%\=%c\/%{TotalColumns()}\ •\ %f\ •\ %l/%L\ •\ %{SectionOfSeven()}/7\ •\ Chars:\ %{TotalChars()}\ •\ 🗎\ %{FileSizeFormatted()}\ •\ 🖪\ %{UnsavedChangesSize()}\ •\ %{VisualSelectionSize()}\ %m%r%h\ •\ %p%%\%= 
+
+              set statusline=%\=C%c\/%{TotalColumns()}\ •\ R%l/%L\ •\ %f\ •\ 🗎\ \%{FileSizeFormatted()}\ •\ 🖪\ %{UnsavedChangesSize()}\ %m%r%h\ •\ Chr:\ %{TotalChars()}\ •\ %{SectionOfSeven()}/7\ •\ %p%%\%=  
+
   redrawstatus
 endfunction
 
 " Set up autocommands for Vim
-augroup UpdateStatuslineGroup
-  autocmd!
+"augroup UpdateStatuslineGroup
+  "autocmd!
   " Update on cursor movement and text changes
-  autocmd CursorMoved,TextChanged,TextChangedI,VimEnter,WinEnter * call UpdateStatusline()
+  "autocmd CursorMoved,TextChanged,TextChangedI,VimEnter,WinEnter * call UpdateStatusline()
   " Update visual selection dynamically
-  autocmd CursorMoved * if mode() =~# 'v' | call UpdateStatusline() | endif
-augroup END
+  "autocmd CursorMoved * if mode() =~# 'v' | call UpdateStatusline() | endif
+"augroup END
 
 
 
@@ -948,7 +954,11 @@ augroup END
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   let g:lsp_cxx_hl_ft_whitelist = ['c']    
 
+" Set default Normal color (for all file types)
+highlight Normal guifg=#dedede
 
+" Exclude this setting for specific file types
+autocmd FileType javascript,cpp,c,cs,typescript,python highlight Normal guifg=#9CDCFE
 highlight! link Operator Delimiter
 
 " Set color for strings inside double quotes to #CD9177
@@ -961,7 +971,7 @@ highlight StringContent guifg=#CD9177 ctermfg=180
 highlight Delimiter guifg=#FFFFFF ctermfg=15
 
 " Optionally link specific syntax groups to the defined highlights
-syntax match Punctuation "[.:;=-><+-]"
+syntax match Punctuation "[.:;=-><+&~%]"
 hi link Punctuation Delimiter     
 
 syntax match Operator "[\+\-\|\!\?]"
@@ -1045,4 +1055,5 @@ augroup custom_syntax_highlighting
     autocmd FileType c syntax match SingleQuoteContent /'\zs[^']*\ze'/ containedin=Comment
     autocmd FileType c highlight link SingleQuoteContent Comment
 augroup END
+
 
